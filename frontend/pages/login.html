@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ATDS — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f0f4ff;}
+
+/* Centered login form */
+.right{max-width:460px;width:100%;background:white;display:flex;align-items:center;justify-content:center;padding:48px 44px;border-radius:20px;box-shadow:0 20px 60px rgba(99,102,241,0.15);margin:20px;}
+.form-wrap{width:100%;}
+
+.form-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#1e293b;margin-bottom:6px;}
+.form-sub{font-size:13px;color:#94a3b8;font-weight:600;margin-bottom:30px;}
+
+/* Role tabs */
+.role-tabs{display:flex;background:#f0f4ff;border-radius:12px;padding:4px;gap:4px;margin-bottom:28px;}
+.role-tab{flex:1;padding:9px;border:none;background:none;border-radius:9px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all 0.2s;color:#64748b;display:flex;align-items:center;justify-content:center;gap:6px;}
+.role-tab.active{background:white;color:#6366f1;box-shadow:0 2px 10px rgba(99,102,241,0.15);}
+
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px;}
+.field input{width:100%;padding:11px 14px;background:#f8faff;border:1.5px solid #e8edf8;border-radius:11px;color:#1e293b;font-size:14px;font-family:'Nunito',sans-serif;outline:none;transition:all 0.2s;}
+.field input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.1);background:white;}
+.field input::placeholder{color:#cbd5e1;}
+
+.demo-chips{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+.demo-chip{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all 0.15s;}
+
+.btn-login{width:100%;padding:13px;background:#6366f1;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:8px;transition:all 0.2s;box-shadow:0 4px 18px rgba(99,102,241,0.3);}
+.btn-login:hover{background:#4f46e5;transform:translateY(-1px);box-shadow:0 6px 24px rgba(99,102,241,0.4);}
+.btn-login:active{transform:translateY(0);}
+.btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+.error-box{display:none;background:#ffe4e6;border:1.5px solid #f43f5e;border-radius:10px;padding:10px 14px;color:#9f1239;font-size:13px;font-weight:600;margin-bottom:14px;}
+.error-box.show{display:block;}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.footer-txt{text-align:center;font-size:12px;color:#94a3b8;margin-top:24px;font-weight:500;}
+
+@media(max-width:768px){body{flex-direction:column;overflow:auto;}.left{display:none;}.right{width:100%;padding:40px 24px;box-shadow:none;}}
+</style>
+</head>
+<body>
+
+
+<!-- Right form -->
+<div class="right">
+  <div class="form-wrap">
+    <div class="form-title">Welcome back 👋</div>
+    <div class="form-sub">Sign in to access your portal</div>
+
+  
+
+    <div class="error-box" id="errBox">Invalid credentials. Please try again.</div>
+
+    <div class="field">
+      <label>User ID</label>
+      <input type="text" id="userId" placeholder="Enter your user ID" autocomplete="username"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"/>
+    </div>
+
+    <button class="btn-login" id="loginBtn" onclick="login()">Sign In →</button>
+    <div class="footer-txt">Academic Tamper Detection System · Secure Portal</div>
+  </div>
+</div>
+
+<script>
+const DEMO = {
+  student: [
+    {label:'STU2021001', id:'STU2021001', pass:'student123'},
+    {label:'STU2022001', id:'STU2022001', pass:'student123'},
+  ],
+  faculty: [
+    {label:'FAC001', id:'FAC001', pass:'faculty123'},
+    {label:'FAC002', id:'FAC002', pass:'faculty123'},
+  ],
+  admin: [
+    {label:'ADMIN001', id:'ADMIN001', pass:'admin123'},
+  ]
+};
+const CHIP_STYLES = {
+  student: 'background:#e0e7ff;border-color:#6366f1;color:#4338ca;',
+  faculty: 'background:#ccfbf1;border-color:#14b8a6;color:#0f766e;',
+  admin:   'background:#fce7f3;border-color:#ec4899;color:#be185d;',
+};
+
+let currentRole = 'student';
+
+function setRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${role}`).classList.add('active');
+  const demos = DEMO[role];
+  document.getElementById('demoChips').innerHTML = demos.map(d =>
+    `<div class="demo-chip" style="${CHIP_STYLES[role]}" onclick="fillDemo('${d.id}','${d.pass}')">${d.label}</div>`
+  ).join('');
+  // Auto-fill first demo
+  if (demos.length) { document.getElementById('userId').value = demos[0].id; document.getElementById('password').value = demos[0].pass; }
+  document.getElementById('errBox').classList.remove('show');
+}
+
+function fillDemo(id, pass) {
+  document.getElementById('userId').value = id;
+  document.getElementById('password').value = pass;
+  document.getElementById('errBox').classList.remove('show');
+}
+
+async function login() {
+  const userId   = document.getElementById('userId').value.trim();
+  const password = document.getElementById('password').value;
+  if (!userId || !password) { showErr('Please enter your User ID and Password.'); return; }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in…';
+  document.getElementById('errBox').classList.remove('show');
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, password })
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem('atds_token', data.token);
+      localStorage.setItem('atds_user', JSON.stringify(data.user));
+      const redirect = { student:'/pages/student-dashboard.html', faculty:'/pages/faculty-dashboard.html', admin:'/pages/admin-dashboard.html' };
+      window.location.href = redirect[data.user.role] || '/pages/student-dashboard.html';
+    } else {
+      showErr(data.message || 'Invalid credentials. Please try again.');
+      btn.disabled = false; btn.textContent = 'Sign In →';
+    }
+  } catch (e) {
+    showErr('Cannot connect to server. Please check your connection.');
+    btn.disabled = false; btn.textContent = 'Sign In →';
+  }
+}
+
+function showErr(msg) {
+  const box = document.getElementById('errBox');
+  box.textContent = '⚠️ ' + msg;
+  box.classList.add('show');
+}
+
+// Init with student tab
+setRole('student');
+</script>
+</body>
+</html>

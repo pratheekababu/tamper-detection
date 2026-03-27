@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ATDS — Admin Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+
+:root {
+  --bg-page:       #f0f4ff;
+  --bg-surface:    #ffffff;
+  --bg-card:       #ffffff;
+  --bg-sidebar:    #ffffff;
+
+  --pastel-blue:   #dbeafe;
+  --pastel-purple: #ede9fe;
+  --pastel-pink:   #fce7f3;
+  --pastel-green:  #d1fae5;
+  --pastel-yellow: #fef9c3;
+  --pastel-orange: #ffedd5;
+  --pastel-teal:   #ccfbf1;
+  --pastel-rose:   #ffe4e6;
+  --pastel-indigo: #e0e7ff;
+  --pastel-sky:    #e0f2fe;
+
+  --accent-blue:   #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-pink:   #ec4899;
+  --accent-green:  #10b981;
+  --accent-yellow: #f59e0b;
+  --accent-orange: #f97316;
+  --accent-teal:   #14b8a6;
+  --accent-rose:   #f43f5e;
+  --accent-indigo: #6366f1;
+  --accent-sky:    #0ea5e9;
+
+  --border:        #e8edf8;
+  --border-soft:   #f0f4ff;
+  --shadow-sm:     0 1px 8px rgba(99,102,241,0.06);
+  --shadow:        0 4px 24px rgba(99,102,241,0.10);
+  --shadow-lg:     0 8px 40px rgba(99,102,241,0.14);
+
+  --text-dark:     #1e293b;
+  --text-body:     #475569;
+  --text-muted:    #94a3b8;
+  --text-light:    #cbd5e1;
+
+  --sidebar-w:     258px;
+  --header-h:      68px;
+  --radius:        16px;
+  --radius-sm:     10px;
+  --radius-lg:     24px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 10%,rgba(219,234,254,0.55) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 80%,rgba(237,233,254,0.45) 0%,transparent 60%);
+}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-indigo);}
+
+/* Layout */
+.app{display:flex;min-height:100vh;position:relative;z-index:1;}
+
+/* Sidebar */
+.sidebar {
+  width:var(--sidebar-w);background:var(--bg-sidebar);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  display:flex;flex-direction:column;
+  box-shadow:4px 0 24px rgba(99,102,241,0.07);
+  overflow-y:auto;transition:transform 0.3s ease;
+}
+
+.sidebar-brand {
+  padding:20px 18px 16px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border-soft);
+}
+.brand-logo {
+  width:42px;height:42px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.brand-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--text-dark);line-height:1.2;}
+.brand-tagline{font-size:10px;color:var(--text-muted);font-weight:500;letter-spacing:0.8px;text-transform:uppercase;}
+
+.sidebar-user {
+  margin:14px 12px 6px;padding:13px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;gap:10px;
+}
+.u-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;}
+.u-name{font-size:13px;font-weight:700;color:var(--text-dark);}
+.u-role{font-size:11px;color:var(--text-muted);font-weight:500;}
+
+.nav-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);padding:10px 16px 4px;}
+
+.nav-item {
+  display:flex;align-items:center;gap:9px;padding:9px 10px;margin:2px 8px;
+  border-radius:var(--radius-sm);font-size:13.5px;font-weight:600;
+  color:var(--text-body);cursor:pointer;border:none;background:none;
+  width:calc(100% - 16px);text-align:left;transition:all 0.18s;
+}
+.nav-item:hover{background:var(--bg-page);color:var(--text-dark);}
+.nav-item.active{font-weight:700;color:var(--text-dark);}
+
+.nav-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:transform 0.18s;}
+.nav-item:hover .nav-ico,.nav-item.active .nav-ico{transform:scale(1.08);}
+
+.nav-badge{margin-left:auto;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:700;}
+
+.sidebar-footer{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border-soft);}
+.logout-btn{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;color:var(--accent-rose);background:none;border:none;width:100%;cursor:pointer;transition:background 0.15s;font-family:'Nunito',sans-serif;}
+.logout-btn:hover{background:var(--pastel-rose);}
+
+/* Main */
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh;}
+
+/* Topbar */
+.topbar{
+  height:var(--header-h);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;
+  padding:0 26px;gap:14px;position:sticky;top:0;z-index:100;
+}
+.topbar-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--text-dark);flex:1;}
+.tb-icon{width:36px;height:36px;border-radius:50%;background:var(--bg-page);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.15s;position:relative;}
+.tb-icon:hover{background:var(--pastel-indigo);border-color:var(--accent-indigo);}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--accent-rose);border-radius:50%;border:2px solid white;}
+
+/* Page */
+.page{padding:26px;flex:1;}
+.page-head{margin-bottom:22px;}
+.page-head h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:3px;}
+.page-head p{font-size:13px;color:var(--text-muted);font-weight:500;}
+
+/* Section */
+.section{display:none;animation:fadeUp 0.3s ease;}
+.section.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Card */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);transition:box-shadow 0.2s;}
+.card:hover{box-shadow:var(--shadow);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-size:14px;font-weight:700;color:var(--text-dark);}
+.card-sub{font-size:12px;color:var(--text-muted);font-weight:500;margin-top:2px;}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;margin-bottom:20px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:17px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow-sm);transition:transform 0.18s,box-shadow 0.18s;cursor:default;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.stat-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.stat-num{font-size:24px;font-weight:800;color:var(--text-dark);line-height:1;}
+.stat-lbl{font-size:12px;font-weight:600;color:var(--text-muted);}
+.stat-chg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block;}
+.up{background:var(--pastel-green);color:var(--accent-green);}
+.dn{background:var(--pastel-rose);color:var(--accent-rose);}
+.nt{background:var(--pastel-yellow);color:var(--accent-yellow);}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius-sm);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead tr{background:var(--bg-page);}
+thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border-soft);transition:background 0.12s;}
+tbody tr:hover{background:var(--bg-page);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:12px 13px;color:var(--text-body);vertical-align:middle;}
+tbody td:first-child{color:var(--text-dark);font-weight:700;}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;}
+.b-blue   {background:var(--pastel-blue);  color:var(--accent-blue);}
+.b-purple {background:var(--pastel-purple);color:var(--accent-purple);}
+.b-pink   {background:var(--pastel-pink);  color:var(--accent-pink);}
+.b-green  {background:var(--pastel-green); color:var(--accent-green);}
+.b-yellow {background:var(--pastel-yellow);color:var(--accent-yellow);}
+.b-orange {background:var(--pastel-orange);color:var(--accent-orange);}
+.b-teal   {background:var(--pastel-teal);  color:var(--accent-teal);}
+.b-rose   {background:var(--pastel-rose);  color:var(--accent-rose);}
+.b-indigo {background:var(--pastel-indigo);color:var(--accent-indigo);}
+.b-sky    {background:var(--pastel-sky);   color:var(--accent-sky);}
+.b-muted  {background:#f1f5f9;color:var(--text-muted);}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:24px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;border:none;transition:all 0.18s;text-decoration:none;white-space:nowrap;}
+.btn-pri{background:var(--accent-indigo);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,0.25);}
+.btn-pri:hover{background:#4f46e5;transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,0.35);}
+.btn-soft{background:var(--pastel-indigo);color:var(--accent-indigo);}
+.btn-soft:hover{background:var(--accent-indigo);color:#fff;}
+.btn-ok{background:var(--accent-green);color:#fff;}
+.btn-ok:hover{filter:brightness(1.05);}
+.btn-del{background:var(--accent-rose);color:#fff;}
+.btn-del:hover{filter:brightness(1.05);}
+.btn-out{background:#fff;border:1.5px solid var(--border);color:var(--text-body);}
+.btn-out:hover{border-color:var(--accent-indigo);color:var(--accent-indigo);background:var(--pastel-indigo);}
+.btn-ghost{background:transparent;color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg-page);}
+.btn-sm{padding:6px 13px;font-size:12px;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;}
+
+/* Forms */
+.fg{margin-bottom:15px;}
+.flbl{display:block;font-size:11px;font-weight:700;color:var(--text-body);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.fctrl{width:100%;padding:9px 13px;background:var(--bg-page);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dark);font-size:13.5px;font-family:'Nunito',sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.fctrl:focus{border-color:var(--accent-indigo);box-shadow:0 0 0 3px rgba(99,102,241,0.1);background:#fff;}
+.fctrl::placeholder{color:var(--text-light);}
+select.fctrl{cursor:pointer;}
+textarea.fctrl{resize:vertical;min-height:88px;}
+
+/* Progress */
+.prog-wrap{background:var(--bg-page);border-radius:99px;height:7px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:99px;transition:width 1.1s ease;}
+
+/* Profile hero */
+.prof-hero{display:flex;align-items:center;gap:20px;margin-bottom:22px;padding:22px;border-radius:var(--radius);background:var(--bg-page);}
+.prof-av-lg{width:82px;height:82px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;flex-shrink:0;border:4px solid #fff;box-shadow:var(--shadow);}
+.prof-name{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;}
+.prof-id{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:2px;}
+
+/* Info grid */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
+.info-tile{background:var(--bg-page);border-radius:var(--radius-sm);padding:13px;}
+.it-lbl{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;}
+.it-val{font-size:14px;font-weight:700;color:var(--text-dark);}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:16px;}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+
+/* Attendance ring */
+.att-ring{position:relative;width:96px;height:96px;}
+.att-ring svg{transform:rotate(-90deg);}
+.att-ring-bg{fill:none;stroke:var(--border);stroke-width:10;}
+.att-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease;}
+.att-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.att-pct{font-size:17px;font-weight:800;color:var(--text-dark);}
+.att-sub{font-size:10px;color:var(--text-muted);font-weight:600;}
+
+/* Timetable */
+.tt-grid{display:grid;grid-template-columns:65px repeat(5,1fr);gap:5px;font-size:12px;}
+.tt-hd{padding:7px 5px;background:var(--bg-page);border-radius:7px;font-weight:700;text-align:center;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+.tt-tm{padding:9px 4px;background:var(--bg-page);border-radius:7px;font-weight:700;text-align:center;color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:11px;}
+.tt-cell{padding:9px 6px;border-radius:9px;font-weight:700;font-size:11.5px;text-align:center;line-height:1.3;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tt-empty{background:var(--bg-page);}
+
+/* Assignment */
+.asgn-card{padding:13px;border-radius:var(--radius-sm);border-left:4px solid;background:var(--bg-page);margin-bottom:9px;transition:transform 0.15s,box-shadow 0.15s;}
+.asgn-card:hover{transform:translateX(4px);box-shadow:var(--shadow-sm);}
+
+/* Notification */
+.notif-item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border-soft);}
+.notif-item:last-child{border-bottom:none;}
+.notif-ico-wrap{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+
+/* Fee */
+.fee-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border-soft);}
+.fee-row:last-child{border-bottom:none;}
+.fee-lbl{font-size:13px;font-weight:600;color:var(--text-body);}
+.fee-amt{font-size:14px;font-weight:800;color:var(--text-dark);}
+
+/* Bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:7px;height:100px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.bar{border-radius:6px 6px 0 0;transition:height 1s ease;width:100%;}
+.bar-lbl{font-size:11px;color:var(--text-muted);font-weight:600;}
+.bar-val{font-size:11px;font-weight:800;color:var(--text-dark);}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(30,41,59,0.25);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:var(--radius-lg);padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:scale(0.95);transition:transform 0.2s;}
+.modal-ov.open .modal{transform:scale(1);}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:3px;}
+.modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+
+/* Utils */
+.flex{display:flex;}.flex-btw{display:flex;align-items:center;justify-content:space-between;}.flex-c{display:flex;align-items:center;}.flex-cc{display:flex;align-items:center;justify-content:center;}
+.gap-2{gap:8px;}.gap-3{gap:12px;}.gap-4{gap:16px;}
+.mt-2{margin-top:8px;}.mt-3{margin-top:14px;}.mt-4{margin-top:20px;}
+.mb-2{margin-bottom:8px;}.mb-3{margin-bottom:14px;}.mb-4{margin-bottom:20px;}
+.w100{width:100%;}.txt-muted{color:var(--text-muted);}.txt-sm{font-size:13px;}.txt-xs{font-size:12px;}.fw7{font-weight:700;}.fw8{font-weight:800;}.hidden{display:none!important;}
+
+.spinner{display:inline-block;width:17px;height:17px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#toastBox{position:fixed;top:20px;right:20px;z-index:9999;}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .page{padding:14px;}
+  .g2,.g3,.g12,.g21{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+}
+
+</style>
+
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar"></aside>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="topbarTitle">Admin Dashboard</div>
+    <div class="flex-c gap-3">
+      <button class="btn btn-soft btn-sm" onclick="runIntegrityCheck()">🔐 Run Integrity Check</button>
+      <div class="tb-icon" onclick="logout()">🚪</div>
+    </div>
+  </header>
+  <main class="page">
+
+    <!-- ══ DASHBOARD ══ -->
+    <section id="sec-dashboard" class="section active">
+      <div class="page-head"><h1 id="adminWelcome">Admin Dashboard</h1><p>Platform-wide overview and statistics</p></div>
+      <div class="stats-row" id="adminStats"></div>
+      <div class="g21 mb-4">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Enrollment by Department</div></div>
+          <div id="deptChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔐 System Health</div></div>
+          <div id="sysHealth"></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🚨 Critical Alerts</div></div>
+          <div id="critAlerts"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📋 Recent Audit Logs</div></div>
+          <div id="recentLogs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PROFILE ══ -->
+    <section id="sec-profile" class="section">
+      <div class="page-head"><h1>Admin Profile</h1></div>
+      <div class="card mb-4">
+        <div class="prof-hero" id="adminProfHero"></div>
+        <div class="info-grid" id="adminProfGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔑 Admin Privileges</div></div>
+        <div class="g3">
+          ${['User Management','Integrity Verification','Audit Log Access','Edit Request Approval','Announcement Control','Fee Management','Department Control','System Configuration','Report Generation'].map(p=>`<div class="info-tile flex-c gap-2"><span style="color:var(--accent-green)">✅</span><span style="font-size:13px;font-weight:600;">${p}</span></div>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ ANALYTICS ══ -->
+    <section id="sec-analytics" class="section">
+      <div class="page-head"><h1>Analytics</h1><p>Platform insights and performance metrics</p></div>
+      <div class="stats-row" id="analyticsStats"></div>
+      <div class="g2 mb-4">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📈 CGPA Distribution</div></div>
+          <div id="cgpaDistChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Program-wise Enrollment</div></div>
+          <div id="programChart"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🔒 Data Integrity Overview</div></div>
+        <div id="integrityOverview"></div>
+      </div>
+    </section>
+
+    <!-- ══ STUDENTS ══ -->
+    <section id="sec-students" class="section">
+      <div class="page-head"><h1>Manage Students</h1></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Student Directory</div>
+          <div class="flex-c gap-2">
+            <input type="text" class="fctrl" style="width:190px;" placeholder="🔍 Search..." id="adminStudSearch" oninput="searchAdminStudents()"/>
+            <button class="btn btn-pri btn-sm" onclick="openAddUser('student')">+ Add Student</button>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Program / Branch</th><th>CGPA</th><th>Integrity</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="adminStudTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ══ FACULTY ══ -->
+    <section id="sec-faculty" class="section">
+      <div class="page-head"><h1>Manage Faculty</h1></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Faculty Directory</div>
+          <button class="btn btn-pri btn-sm" onclick="openAddUser('faculty')">+ Add Faculty</button>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+          <tbody id="adminFacTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ══ DEPARTMENTS ══ -->
+    <section id="sec-departments" class="section">
+      <div class="page-head"><h1>Departments</h1><p>Academic department overview</p></div>
+      <div id="deptCards" class="g3 mb-4"></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Department Statistics</div></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Department</th><th>Students</th><th>Faculty</th><th>Avg CGPA</th><th>Programs</th><th>Status</th></tr></thead>
+          <tbody id="deptTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ══ FEES ══ -->
+    <section id="sec-fees" class="section">
+      <div class="page-head"><h1>Fee Management</h1><p>Institution-wide fee tracking</p></div>
+      <div class="stats-row" id="feeStats"></div>
+      <div class="g2 mb-4">
+        <div class="card">
+          <div class="card-header"><div class="card-title">💳 Fee Collection Status</div></div>
+          <div id="feeCollStatus"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📋 Program-wise Fee Structure</div></div>
+          <div id="feeProgramStruct"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">⚠️ Defaulters List</div><div class="card-sub">Students with outstanding fees</div></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Student ID</th><th>Name</th><th>Program</th><th>Due Amount</th><th>Overdue Days</th><th>Action</th></tr></thead>
+          <tbody id="defaultersTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ══ REQUESTS ══ -->
+    <section id="sec-requests" class="section">
+      <div class="page-head"><h1>Edit Requests</h1><p>Review faculty data change requests</p></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Pending Requests</div>
+          <div class="flex-c gap-2">
+            <select class="fctrl" style="width:130px;" id="reqFilter" onchange="loadEditRequests(this.value)">
+              <option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="all">All</option>
+            </select>
+            <button class="btn btn-soft btn-sm" onclick="loadEditRequests(document.getElementById('reqFilter').value)">🔄</button>
+          </div>
+        </div>
+        <div id="reqsContainer"></div>
+      </div>
+    </section>
+
+    <!-- ══ INTEGRITY ══ -->
+    <section id="sec-integrity" class="section">
+      <div class="page-head"><h1>Integrity Check</h1><p>SHA-256 hash verification for all records</p></div>
+      <div class="card mb-4" style="background:var(--pastel-indigo);border-color:rgba(99,102,241,0.2);">
+        <div class="flex-btw">
+          <div><div style="font-size:18px;font-weight:700;color:var(--accent-indigo);">🔐 SHA-256 Hash Verification</div><div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Cryptographically verify all student academic data</div></div>
+          <button class="btn btn-pri" id="integrityBtn" onclick="runIntegrityCheck()">🔍 Run Full Check</button>
+        </div>
+        <div id="integrityResult" class="mt-4"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Hash Records</div><div class="card-sub">All students with integrity status</div></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Student ID</th><th>Name</th><th>SHA-256 Hash</th><th>Status</th><th>Last Verified</th><th>Actions</th></tr></thead>
+          <tbody id="hashTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ══ AUDIT ══ -->
+    <section id="sec-audit" class="section">
+      <div class="page-head"><h1>Audit Logs</h1><p>Full system action trail</p></div>
+      <div class="stats-row" id="auditStats"></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Full Audit Trail</div>
+          <div class="flex-c gap-2">
+            <select class="fctrl" style="width:170px;" id="logAction" onchange="loadAuditLogs()">
+              <option value="">All Actions</option>
+              <option>LOGIN</option><option>EDIT_REQUEST_CREATED</option><option>EDIT_REQUEST_APPROVED</option>
+              <option>EDIT_REQUEST_REJECTED</option><option>TAMPER_DETECTED</option><option>PDF_GENERATED</option>
+            </select>
+            <select class="fctrl" style="width:130px;" id="logSev" onchange="loadAuditLogs()">
+              <option value="">All Severity</option><option>low</option><option>medium</option><option>high</option><option>critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Timestamp</th><th>Action</th><th>Performed By</th><th>Role</th><th>Severity</th><th>Status</th></tr></thead>
+          <tbody id="auditTbody"></tbody>
+        </table></div>
+        <div id="auditPag" class="mt-3 flex-cc gap-2"></div>
+      </div>
+    </section>
+
+    <!-- ══ ANNOUNCEMENTS ══ -->
+    <section id="sec-announcements" class="section">
+      <div class="page-head"><h1>Announcements</h1><p>Publish announcements to students, faculty, or both</p></div>
+      <div class="card mb-4">
+        <div class="card-header"><div class="card-title">📢 Create Announcement</div></div>
+        <div class="g2">
+          <div class="fg"><label class="flbl">Title *</label><input type="text" class="fctrl" id="annTitle" placeholder="Announcement title"/></div>
+          <div class="fg"><label class="flbl">Category</label>
+            <select class="fctrl" id="annCat">
+              <option value="general">General</option><option value="academic">Academic</option>
+              <option value="exam">Exam</option><option value="result">Result</option>
+              <option value="event">Event</option><option value="holiday">Holiday</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Priority</label>
+            <select class="fctrl" id="annPri">
+              <option value="normal">Normal</option><option value="low">Low</option>
+              <option value="high">High</option><option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="flbl">Send To *</label>
+            <div style="display:flex;gap:12px;margin-top:6px;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-page);font-size:13px;font-weight:700;flex:1;transition:all 0.15s;" id="lbl-student">
+                <input type="checkbox" id="chk-student" checked onchange="updateAnnTarget()" style="width:16px;height:16px;accent-color:var(--accent-indigo);cursor:pointer;"/>
+                🎓 Students
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-page);font-size:13px;font-weight:700;flex:1;transition:all 0.15s;" id="lbl-faculty">
+                <input type="checkbox" id="chk-faculty" checked onchange="updateAnnTarget()" style="width:16px;height:16px;accent-color:var(--accent-teal);cursor:pointer;"/>
+                👨‍🏫 Faculty
+              </label>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;" id="annTargetHint">Will be sent to: Students &amp; Faculty</div>
+          </div>
+        </div>
+        <div class="fg"><label class="flbl">Content *</label><textarea class="fctrl" id="annContent" rows="4" placeholder="Write announcement content here..."></textarea></div>
+        <button class="btn btn-pri" onclick="createAnnouncement()">📢 Publish Announcement</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Active Announcements</div><div class="card-sub" id="annCount"></div></div>
+          <button class="btn btn-soft btn-sm" onclick="loadAnnouncements()">🔄 Refresh</button>
+        </div>
+        <div id="annList"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+</div>
+
+<!-- Fee Notice Modal -->
+<div class="modal-ov" id="feeNoticeModal">
+  <div class="modal">
+    <div class="flex-btw mb-3">
+      <div><div class="modal-title">💳 Send Fee Notice</div><div class="modal-sub" id="feeNoticeTarget">Sending notice to student</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('feeNoticeModal')">✕</button>
+    </div>
+    <div class="fg"><label class="flbl">Notice Type</label>
+      <select class="fctrl" id="noticeType">
+        <option value="reminder">📧 Payment Reminder</option>
+        <option value="warning">⚠️ Warning Notice</option>
+        <option value="final">🚨 Final Notice</option>
+      </select>
+    </div>
+    <div class="fg"><label class="flbl">Due Amount</label>
+      <input type="text" class="fctrl" id="noticeDueAmt" placeholder="e.g. ₹33,000" readonly/>
+    </div>
+    <div class="fg"><label class="flbl">Message</label>
+      <textarea class="fctrl" id="noticeMessage" rows="4" placeholder="Write a custom message to the student..."></textarea>
+    </div>
+    <div class="fg"><label class="flbl">Due Date</label>
+      <input type="date" class="fctrl" id="noticeDueDate"/>
+    </div>
+    <div style="background:var(--pastel-yellow);border-radius:10px;padding:12px;font-size:12px;font-weight:600;color:var(--accent-yellow);margin-bottom:16px;">
+      ⚡ This notice will be stored and shown in the student's notification feed when they log in.
+    </div>
+    <div class="flex-btw">
+      <button class="btn btn-ghost" onclick="closeModal('feeNoticeModal')">Cancel</button>
+      <button class="btn btn-pri" id="sendNoticeBtn" onclick="sendFeeNotice()">📨 Send Notice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal-ov" id="addUserModal">
+  <div class="modal">
+    <div class="flex-btw mb-3"><div><div class="modal-title" id="addUserTitle">Add User</div><div class="modal-sub">Fill in user details</div></div><button class="btn btn-ghost btn-sm" onclick="closeModal('addUserModal')">✕</button></div>
+    <div class="g2">
+      <div class="fg"><label class="flbl">User ID *</label><input type="text" class="fctrl" id="nuId" placeholder="e.g. STU2024001"/></div>
+      <div class="fg"><label class="flbl">Full Name *</label><input type="text" class="fctrl" id="nuName" placeholder="Full name"/></div>
+      <div class="fg"><label class="flbl">Email *</label><input type="email" class="fctrl" id="nuEmail" placeholder="email@atds.edu"/></div>
+      <div class="fg"><label class="flbl">Password *</label><input type="password" class="fctrl" id="nuPass" placeholder="Min 6 chars"/></div>
+      <div class="fg"><label class="flbl">Department</label><input type="text" class="fctrl" id="nuDept" placeholder="e.g. Computer Science"/></div>
+      <div class="fg"><label class="flbl">Phone</label><input type="text" class="fctrl" id="nuPhone" placeholder="+91 XXXXX XXXXX"/></div>
+    </div>
+    <div id="stuFields">
+      <div style="border-top:1px solid var(--border);margin:14px 0;padding-top:14px;font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Student Details</div>
+      <div class="g2">
+        <div class="fg"><label class="flbl">Program</label><select class="fctrl" id="nuProgram"><option>B.Tech</option><option>M.Tech</option><option>BCA</option><option>MCA</option><option>MBA</option><option>PhD</option></select></div>
+        <div class="fg"><label class="flbl">Branch</label><input type="text" class="fctrl" id="nuBranch" placeholder="e.g. Computer Science"/></div>
+        <div class="fg"><label class="flbl">Batch Year</label><input type="number" class="fctrl" id="nuBatch" value="2024"/></div>
+      </div>
+      <div style="border-top:1px solid var(--border);margin:14px 0;padding-top:14px;font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;">Academic Records (Optional)</div>
+      <div class="g3">
+        <div class="fg"><label class="flbl">Semester</label><input type="number" class="fctrl" id="nuSemester" placeholder="1" min="1" max="10" value="1"/></div>
+        <div class="fg"><label class="flbl">GPA</label><input type="number" class="fctrl" id="nuGPA" placeholder="0.0" step="0.01" min="0" max="10" value="0"/></div>
+        <div class="fg"><label class="flbl">Total Credits</label><input type="number" class="fctrl" id="nuCredits" placeholder="0" value="0"/></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label class="flbl">Earned Credits</label><input type="number" class="fctrl" id="nuEarned" placeholder="0" value="0"/></div>
+        <div class="fg"><label class="flbl">Year</label><input type="number" class="fctrl" id="nuYear" placeholder="1" min="1" value="1"/></div>
+        <div></div>
+      </div>
+      <button type="button" class="btn btn-soft btn-sm" onclick="addSemesterRecord()" style="margin-bottom:12px;">➕ Add Another Semester</button>
+      <div id="semestersList" style="max-height:200px;overflow-y:auto;"></div>
+    </div>
+    <div class="flex-btw mt-3">
+      <button class="btn btn-ghost" onclick="closeModal('addUserModal')">Cancel</button>
+      <button class="btn btn-pri" id="addUserBtn" onclick="submitAddUser()">Create User</button>
+    </div>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-ov" id="reviewModal">
+  <div class="modal">
+    <div class="flex-btw mb-3"><div class="modal-title">Review Edit Request</div><button class="btn btn-ghost btn-sm" onclick="closeModal('reviewModal')">✕</button></div>
+    <div id="reviewContent"></div>
+    <div class="fg mt-3"><label class="flbl">Admin Note (optional)</label><textarea class="fctrl" id="reviewNote" rows="3" placeholder="Add note for faculty..."></textarea></div>
+    <div class="flex-btw mt-4">
+      <button class="btn btn-ghost" onclick="closeModal('reviewModal')">Cancel</button>
+      <div class="flex-c gap-2">
+        <button class="btn btn-del btn-sm" id="rejectBtn" onclick="reviewReq('reject')">❌ Reject</button>
+        <button class="btn btn-ok btn-sm" id="approveBtn" onclick="reviewReq('approve')">✅ Approve</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── API ───────────────────────────────────────────────────────────────────────
+async function apiReq(endpoint, opts = {}) {
+  const token = localStorage.getItem('atds_token');
+  const cfg = {
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    ...opts
+  };
+  if (cfg.body && typeof cfg.body === 'object') cfg.body = JSON.stringify(cfg.body);
+  try {
+    const res = await fetch(`/api${endpoint}`, cfg);
+    const data = await res.json();
+    if (res.status === 401) { logout(); return null; }
+    return data;
+  } catch (e) {
+    showToast('Connection error', 'error');
+    return null;
+  }
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function getUser()  { return JSON.parse(localStorage.getItem('atds_user') || 'null'); }
+function getToken() { return localStorage.getItem('atds_token'); }
+
+function requireAuth(roles = []) {
+  const user = getUser(), token = getToken();
+  if (!user || !token) { window.location.href = '/pages/login.html'; return null; }
+  if (roles.length && !roles.includes(user.role)) { window.location.href = '/pages/login.html'; return null; }
+  return user;
+}
+
+function logout() {
+  apiReq('/auth/logout', { method: 'POST' }).catch(() => {});
+  ['atds_token','atds_user','atds_student'].forEach(k => localStorage.removeItem(k));
+  window.location.href = '/pages/login.html';
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type = 'info', dur = 3400) {
+  let box = document.getElementById('toastBox');
+  if (!box) {
+    box = document.createElement('div'); box.id = 'toastBox';
+    box.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
+    document.body.appendChild(box);
+  }
+  const colors = {
+    success: { bg:'#d1fae5', border:'#10b981', txt:'#065f46', ico:'✅' },
+    error:   { bg:'#ffe4e6', border:'#f43f5e', txt:'#9f1239', ico:'❌' },
+    warning: { bg:'#fef9c3', border:'#f59e0b', txt:'#78350f', ico:'⚠️' },
+    info:    { bg:'#e0e7ff', border:'#6366f1', txt:'#3730a3', ico:'ℹ️' }
+  };
+  const c = colors[type] || colors.info;
+  const t = document.createElement('div');
+  t.style.cssText = `display:flex;align-items:center;gap:9px;padding:12px 16px;border-radius:12px;background:${c.bg};border:1.5px solid ${c.border};color:${c.txt};font-size:13.5px;font-family:'Nunito',sans-serif;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.1);max-width:340px;animation:toastIn 0.28s ease;`;
+  t.innerHTML = `<span>${c.ico}</span><span>${msg}</span>`;
+  const style = document.createElement('style');
+  style.textContent = '@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}';
+  if (!document.querySelector('#toastStyle')) { style.id = 'toastStyle'; document.head.appendChild(style); }
+  box.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(16px)'; t.style.transition='all 0.28s'; setTimeout(() => t.remove(), 300); }, dur);
+}
+
+// ── Section navigation ────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById(`sec-${id}`);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.section === id);
+  });
+  if (window._onSection) window._onSection(id);
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+function buildSidebar(role) {
+  const user = getUser();
+  if (!user) return '';
+  const initials = user.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+
+  const navDefs = {
+    student: {
+      color:'var(--accent-indigo)', bg:'var(--pastel-indigo)',
+      items: [
+        { s:'dashboard',     ico:'🏠', lbl:'Dashboard',        clr:'var(--pastel-indigo)', acc:'var(--accent-indigo)' },
+        { s:'profile',       ico:'👤', lbl:'My Profile',       clr:'var(--pastel-purple)', acc:'var(--accent-purple)' },
+        { s:'academics',     ico:'🎓', lbl:'Academic Records',  clr:'var(--pastel-blue)',   acc:'var(--accent-blue)'   },
+        { s:'attendance',    ico:'📅', lbl:'Attendance',        clr:'var(--pastel-green)',  acc:'var(--accent-green)'  },
+        { s:'courses',       ico:'📚', lbl:'Courses',           clr:'var(--pastel-sky)',    acc:'var(--accent-sky)'    },
+        { s:'assignments',   ico:'✏️', lbl:'Assignments',       clr:'var(--pastel-orange)', acc:'var(--accent-orange)' },
+        { s:'timetable',     ico:'🕐', lbl:'Timetable',         clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+        { s:'fees',          ico:'💳', lbl:'Fee Details',       clr:'var(--pastel-pink)',   acc:'var(--accent-pink)'   },
+        { s:'notifications', ico:'🔔', lbl:'Notifications',     clr:'var(--pastel-yellow)', acc:'var(--accent-yellow)', badge:3 },
+      ]
+    },
+    faculty: {
+      color:'var(--accent-teal)', bg:'var(--pastel-teal)',
+      items: [
+        { s:'dashboard',   ico:'🏠', lbl:'Dashboard',        clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+        { s:'profile',     ico:'👤', lbl:'My Profile',       clr:'var(--pastel-purple)', acc:'var(--accent-purple)' },
+        { s:'students',    ico:'🎓', lbl:'Student List',      clr:'var(--pastel-blue)',   acc:'var(--accent-blue)'   },
+        { s:'marks',       ico:'📝', lbl:'Mark Management',   clr:'var(--pastel-indigo)', acc:'var(--accent-indigo)' },
+        { s:'attendance',  ico:'📅', lbl:'Attendance',        clr:'var(--pastel-green)',  acc:'var(--accent-green)'  },
+        { s:'assignments', ico:'✏️', lbl:'Assignments',       clr:'var(--pastel-orange)', acc:'var(--accent-orange)' },
+        { s:'timetable',   ico:'🕐', lbl:'Timetable',         clr:'var(--pastel-sky)',    acc:'var(--accent-sky)'    },
+        { s:'announcements',ico:'📢',lbl:'Announcements',     clr:'var(--pastel-pink)',   acc:'var(--accent-pink)'   },
+        { s:'requests',    ico:'📋', lbl:'Edit Requests',     clr:'var(--pastel-yellow)', acc:'var(--accent-yellow)', badge:'' },
+      ]
+    },
+    admin: {
+      color:'var(--accent-pink)', bg:'var(--pastel-pink)',
+      items: [
+        { s:'dashboard',     ico:'🏠', lbl:'Dashboard',        clr:'var(--pastel-pink)',   acc:'var(--accent-pink)'   },
+        { s:'profile',       ico:'👤', lbl:'My Profile',       clr:'var(--pastel-purple)', acc:'var(--accent-purple)' },
+        { s:'analytics',     ico:'📊', lbl:'Analytics',        clr:'var(--pastel-blue)',   acc:'var(--accent-blue)'   },
+        { s:'students',      ico:'🎓', lbl:'Students',          clr:'var(--pastel-indigo)', acc:'var(--accent-indigo)' },
+        { s:'faculty',       ico:'👨‍🏫', lbl:'Faculty',          clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+        { s:'departments',   ico:'🏛️', lbl:'Departments',      clr:'var(--pastel-sky)',    acc:'var(--accent-sky)'    },
+        { s:'fees',          ico:'💳', lbl:'Fee Management',    clr:'var(--pastel-green)',  acc:'var(--accent-green)'  },
+        { s:'requests',      ico:'📋', lbl:'Edit Requests',     clr:'var(--pastel-orange)', acc:'var(--accent-orange)', badge:'' },
+        { s:'integrity',     ico:'🔐', lbl:'Integrity Check',   clr:'var(--pastel-rose)',   acc:'var(--accent-rose)'   },
+        { s:'audit',         ico:'📄', lbl:'Audit Logs',        clr:'var(--pastel-yellow)', acc:'var(--accent-yellow)' },
+        { s:'announcements', ico:'📢', lbl:'Announcements',     clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+      ]
+    }
+  };
+
+  const def = navDefs[role];
+  const roleLabel = { student:'Student', faculty:'Faculty', admin:'Administrator' }[role];
+  const avatarStyle = `background:${def.bg};color:${def.color};`;
+
+  const navHTML = def.items.map(it => `
+    <button class="nav-item" data-section="${it.s}" onclick="showSection('${it.s}')">
+      <span class="nav-ico" style="background:${it.clr};color:${it.acc};">${it.ico}</span>
+      <span>${it.lbl}</span>
+      ${it.badge !== undefined ? `<span class="nav-badge b-rose" id="badge-${it.s}" style="display:${it.badge ? 'inline' : 'none'}">${it.badge || ''}</span>` : ''}
+    </button>
+  `).join('');
+
+  return `
+    <div class="sidebar-brand">
+      <div class="brand-logo" style="background:${def.bg};">🛡️</div>
+      <div>
+        <div class="brand-name">ATDS Portal</div>
+        <div class="brand-tagline">Tamper Detection</div>
+      </div>
+    </div>
+    <div class="sidebar-user" style="background:${def.bg}20;">
+      <div class="u-avatar" style="${avatarStyle}">${initials}</div>
+      <div>
+        <div class="u-name">${user.name}</div>
+        <div class="u-role">🎓 ${roleLabel}</div>
+      </div>
+    </div>
+    <div class="nav-section-lbl">Menu</div>
+    ${navHTML}
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+    </div>
+  `;
+}
+
+// ── Formatters ────────────────────────────────────────────────────────────────
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+function fmtDT(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function statusBadge(s) {
+  const m = {
+    pending:  '<span class="badge b-yellow">⏳ Pending</span>',
+    approved: '<span class="badge b-green">✅ Approved</span>',
+    rejected: '<span class="badge b-rose">❌ Rejected</span>',
+    verified: '<span class="badge b-green">🔒 Verified</span>',
+    tampered: '<span class="badge b-rose">⚠️ Tampered</span>',
+    active:   '<span class="badge b-green">● Active</span>',
+    inactive: '<span class="badge b-muted">● Inactive</span>',
+    present:  '<span class="badge b-green">Present</span>',
+    absent:   '<span class="badge b-rose">Absent</span>',
+    late:     '<span class="badge b-yellow">Late</span>',
+  };
+  return m[s] || `<span class="badge b-muted">${s}</span>`;
+}
+function truncHash(h) {
+  return h && h.length >= 16 ? h.substring(0,8)+'…'+h.substring(h.length-8) : h;
+}
+
+// ── Loading helpers ───────────────────────────────────────────────────────────
+function loadingHTML(msg='Loading…') {
+  return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px;color:var(--text-muted);">
+    <div style="width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent-indigo);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+    <span style="font-size:13px;font-weight:600;">${msg}</span>
+  </div>`;
+}
+function emptyHTML(msg='No data found', ico='📭') {
+  return `<div style="text-align:center;padding:40px;color:var(--text-muted);">
+    <div style="font-size:38px;margin-bottom:10px;opacity:0.45;">${ico}</div>
+    <div style="font-size:13px;font-weight:600;">${msg}</div>
+  </div>`;
+}
+
+</script>
+<script>
+let allStudents=[], allFaculty=[], currentReviewId=null, addUserRole='student', semesterRecords=[];
+const DEPTS = [
+  {name:'Computer Science',students:180,faculty:18,avgCgpa:8.4,programs:['B.Tech','M.Tech','MCA'],color:'var(--pastel-indigo)',acc:'var(--accent-indigo)'},
+  {name:'Electronics',students:120,faculty:12,avgCgpa:7.9,programs:['B.Tech','M.Tech'],color:'var(--pastel-teal)',acc:'var(--accent-teal)'},
+  {name:'Mechanical',students:90,faculty:10,avgCgpa:7.6,programs:['B.Tech'],color:'var(--pastel-orange)',acc:'var(--accent-orange)'},
+  {name:'Civil',students:70,faculty:8,avgCgpa:7.4,programs:['B.Tech'],color:'var(--pastel-sky)',acc:'var(--accent-sky)'},
+  {name:'Business Admin',students:110,faculty:14,avgCgpa:7.8,programs:['MBA'],color:'var(--pastel-pink)',acc:'var(--accent-pink)'},
+];
+const TITLE_MAP={dashboard:'Admin Dashboard',profile:'My Profile',analytics:'Analytics',students:'Manage Students',faculty:'Manage Faculty',departments:'Departments',fees:'Fee Management',requests:'Edit Requests',integrity:'Integrity Check',audit:'Audit Logs',announcements:'Announcements'};
+
+async function init() {
+  const user = requireAuth(['admin']);
+  if(!user) return;
+  document.getElementById('sidebar').innerHTML = buildSidebar('admin');
+  window._onSection = id => { document.getElementById('topbarTitle').textContent = TITLE_MAP[id]||id; };
+  document.getElementById('adminWelcome').textContent = `Welcome, ${user.name.split(' ')[0]}! 🔑`;
+  renderAdminProfile(user);
+  await loadDashboard();
+  await loadUsers();
+  renderDeptSection();
+  renderFeeSection();
+  renderAnalytics();
+  loadAnnouncements();
+  loadMyRequests();
+  loadHashRecords();
+  loadAuditLogs();
+  loadAuditSummary();
+}
+
+async function loadDashboard() {
+  const data = await apiReq('/admin/dashboard-stats');
+  const s = data?.stats || {};
+  document.getElementById('adminStats').innerHTML = `
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">🎓</div><div class="stat-num">${s.totalStudents||245}</div><div class="stat-lbl">Active Students</div><span class="stat-chg up">↑ 12 this month</span></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-teal);">👨‍🏫</div><div class="stat-num">${s.totalFaculty||42}</div><div class="stat-lbl">Faculty Members</div><span class="stat-chg nt">Stable</span></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-orange);">⏳</div><div class="stat-num">${s.pendingRequests||0}</div><div class="stat-lbl">Pending Requests</div>${s.pendingRequests>0?'<span class="stat-chg dn">Needs review</span>':'<span class="stat-chg up">All clear</span>'}</div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-rose);">⚠️</div><div class="stat-num">${s.tamperedRecords||0}</div><div class="stat-lbl">Tampered Records</div>${s.tamperedRecords>0?'<span class="stat-chg dn">⚠️ Alert</span>':'<span class="stat-chg up">✅ Clean</span>'}</div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-blue);">📋</div><div class="stat-num">${(s.totalLogs||1247).toLocaleString()}</div><div class="stat-lbl">Audit Entries</div></div>
+  `;
+  if(s.pendingRequests>0) { const b=document.getElementById('badge-requests'); if(b){b.style.display='inline';b.textContent=s.pendingRequests;} }
+
+  // Dept chart
+  document.getElementById('deptChart').innerHTML = `<div class="bar-chart" style="height:120px;align-items:flex-end;">
+    ${DEPTS.map(d=>`<div class="bar-col">
+      <div class="bar-val">${d.students}</div>
+      <div class="bar" style="height:${(d.students/200)*100}px;background:${d.acc};border-radius:8px 8px 0 0;"></div>
+      <div class="bar-lbl" style="font-size:10px;max-width:50px;text-align:center;">${d.name.split(' ')[0]}</div>
+    </div>`).join('')}
+  </div>`;
+
+  // System health
+  const health=[{lbl:'Data Integrity',val:100,clr:'var(--accent-green)'},{lbl:'Server Uptime',val:99.9,clr:'var(--accent-teal)'},{lbl:'Fee Collection',val:72,clr:'var(--accent-orange)'},{lbl:'Attendance Rate',val:85,clr:'var(--accent-indigo)'}];
+  document.getElementById('sysHealth').innerHTML = health.map(h=>`
+    <div style="margin-bottom:14px;">
+      <div class="flex-btw mb-1"><span style="font-size:13px;font-weight:600;">${h.lbl}</span><span style="font-size:13px;font-weight:800;color:${h.clr}">${h.val}%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${h.val}%;background:${h.clr};"></div></div>
+    </div>`).join('');
+
+  // Alerts
+  const alerts=data?.criticalAlerts||[];
+  document.getElementById('critAlerts').innerHTML = alerts.length
+    ? alerts.map(a=>`<div class="notif-item"><div class="notif-ico-wrap" style="background:var(--pastel-rose);">🚨</div><div><div style="font-size:13px;font-weight:600;">${a.action}</div><div style="font-size:11px;color:var(--text-muted);">${a.performedBy?.name||'System'} · ${fmtDT(a.timestamp)}</div></div></div>`).join('')
+    : '<div style="text-align:center;padding:24px;color:var(--text-muted);">✅ No critical alerts</div>';
+
+  // Recent logs
+  const logs=data?.recentLogs||[];
+  document.getElementById('recentLogs').innerHTML = logs.slice(0,6).map(l=>`
+    <div class="notif-item"><div class="notif-ico-wrap" style="background:var(--pastel-indigo);">📋</div>
+    <div style="flex:1;"><div style="font-size:12px;font-weight:700;"><span class="badge b-indigo" style="font-size:11px;">${l.action}</span></div>
+    <div style="font-size:11px;color:var(--text-muted);">${l.performedBy?.name||'System'} · ${fmtDT(l.timestamp)}</div></div></div>`).join('')
+    || '<div style="text-align:center;padding:20px;color:var(--text-muted);">No recent logs</div>';
+}
+
+async function loadUsers() {
+  const [sData, fData] = await Promise.all([apiReq('/admin/users?role=student&limit=100'), apiReq('/admin/users?role=faculty&limit=100')]);
+  allStudents = sData?.users || [];
+  allFaculty  = fData?.users || [];
+  const studData = await apiReq('/students?limit=100');
+  const sMap = {}; (studData?.students||[]).forEach(s => { sMap[s.userId?._id] = s; });
+
+  document.getElementById('adminStudTbody').innerHTML = allStudents.map(u => {
+    const s = sMap[u._id] || {};
+    return `<tr>
+      <td style="font-size:12px;">${u.userId}</td><td>${u.name}</td><td style="font-size:12px;">${u.email}</td>
+      <td>${s.program||'B.Tech'} / ${s.branch||'CS'}</td>
+      <td><strong style="color:var(--accent-indigo);">${s.cgpa?.toFixed(2)||'–'}</strong></td>
+      <td>${statusBadge(s.integrityStatus||'verified')}</td>
+      <td>${statusBadge(u.isActive?'active':'inactive')}</td>
+      <td><button class="btn btn-soft btn-sm" onclick="toggleUser('${u._id}',this)">${u.isActive?'Deactivate':'Activate'}</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-muted);">No students found</td></tr>';
+
+  document.getElementById('adminFacTbody').innerHTML = allFaculty.map(u => `
+    <tr>
+      <td style="font-size:12px;">${u.userId}</td><td>${u.name}</td><td style="font-size:12px;">${u.email}</td>
+      <td>${u.department||'–'}</td><td>${statusBadge(u.isActive?'active':'inactive')}</td>
+      <td style="font-size:12px;">${fmtDT(u.lastLogin)}</td>
+      <td><button class="btn btn-soft btn-sm" onclick="toggleUser('${u._id}',this)">${u.isActive?'Deactivate':'Activate'}</button></td>
+    </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted);">No faculty found</td></tr>';
+
+  const sel = document.getElementById('reqStudent');
+  if(sel) { sel.innerHTML='<option value="">-- Select Student --</option>'+allStudents.map(u=>`<option value="${u._id}">${u.userId} — ${u.name}</option>`).join(''); }
+}
+
+function searchAdminStudents() {
+  const q = document.getElementById('adminStudSearch').value.toLowerCase();
+  const filtered = allStudents.filter(u => u.userId.toLowerCase().includes(q) || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+  const studData = {}; // simplified
+  document.getElementById('adminStudTbody').innerHTML = filtered.map(u => `
+    <tr><td style="font-size:12px;">${u.userId}</td><td>${u.name}</td><td style="font-size:12px;">${u.email}</td>
+    <td>B.Tech / CS</td><td>–</td><td>${statusBadge('verified')}</td><td>${statusBadge(u.isActive?'active':'inactive')}</td>
+    <td><button class="btn btn-soft btn-sm" onclick="toggleUser('${u._id}',this)">${u.isActive?'Deactivate':'Activate'}</button></td></tr>`).join('')
+    || '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted);">No results</td></tr>';
+}
+
+async function toggleUser(id, btn) {
+  btn.disabled=true;
+  const data = await apiReq(`/admin/users/${id}/toggle-status`,{method:'PATCH'});
+  btn.disabled=false;
+  if(data?.success) { showToast(data.message,'success'); btn.textContent=data.isActive?'Deactivate':'Activate'; }
+  else showToast(data?.message||'Failed','error');
+}
+
+function renderAdminProfile(user) {
+  const i = user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('adminProfHero').innerHTML = `
+    <div class="prof-av-lg" style="background:var(--pastel-pink);color:var(--accent-pink);">${i}</div>
+    <div><div class="prof-name">${user.name}</div><div class="prof-id">${user.userId}</div>
+    <div class="mt-2 flex gap-2"><span class="badge b-pink">🔑 Administrator</span><span class="badge b-green">● Active</span></div></div>`;
+  document.getElementById('adminProfGrid').innerHTML = `
+    <div class="info-tile"><div class="it-lbl">Admin ID</div><div class="it-val">${user.userId}</div></div>
+    <div class="info-tile"><div class="it-lbl">Email</div><div class="it-val">${user.email}</div></div>
+    <div class="info-tile"><div class="it-lbl">Department</div><div class="it-val">${user.department||'Administration'}</div></div>
+    <div class="info-tile"><div class="it-lbl">Last Login</div><div class="it-val">${fmtDT(user.lastLogin)}</div></div>
+    <div class="info-tile"><div class="it-lbl">Total Students</div><div class="it-val">${allStudents.length||245}</div></div>
+    <div class="info-tile"><div class="it-lbl">Total Faculty</div><div class="it-val">${allFaculty.length||42}</div></div>`;
+}
+
+function renderDeptSection() {
+  document.getElementById('deptCards').innerHTML = DEPTS.map(d=>`
+    <div class="card" style="border-top:4px solid ${d.acc};">
+      <div style="width:44px;height:44px;border-radius:12px;background:${d.color};display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;">🏛️</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${d.name}</div>
+      <div class="flex-btw mt-2"><span style="font-size:12px;color:var(--text-muted);">Students</span><span style="font-weight:800;color:${d.acc}">${d.students}</span></div>
+      <div class="flex-btw mt-1"><span style="font-size:12px;color:var(--text-muted);">Faculty</span><span style="font-weight:800;">${d.faculty}</span></div>
+      <div class="flex-btw mt-1"><span style="font-size:12px;color:var(--text-muted);">Avg CGPA</span><span style="font-weight:800;">${d.avgCgpa}</span></div>
+      <div class="mt-2">${d.programs.map(p=>`<span class="badge b-muted" style="font-size:10px;margin:2px 2px 0 0;">${p}</span>`).join('')}</div>
+    </div>`).join('');
+
+  document.getElementById('deptTbody').innerHTML = DEPTS.map(d=>`
+    <tr><td>${d.name}</td><td>${d.students}</td><td>${d.faculty}</td>
+    <td><strong style="color:var(--accent-indigo);">${d.avgCgpa}</strong></td>
+    <td>${d.programs.map(p=>`<span class="badge b-muted" style="font-size:11px;">${p}</span>`).join(' ')}</td>
+    <td><span class="badge b-green">● Active</span></td></tr>`).join('');
+}
+
+function renderAnalytics() {
+  document.getElementById('analyticsStats').innerHTML = `
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">📊</div><div class="stat-num">8.12</div><div class="stat-lbl">Avg CGPA (Platform)</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-green);">🏆</div><div class="stat-num">34</div><div class="stat-lbl">CGPA Above 9.0</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-orange);">📉</div><div class="stat-num">8</div><div class="stat-lbl">Below 6.0 CGPA</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-teal);">📈</div><div class="stat-num">87%</div><div class="stat-lbl">Pass Percentage</div></div>
+  `;
+
+  const cgpaRanges=[{lbl:'9-10',cnt:34,clr:'var(--accent-green)'},{lbl:'8-9',cnt:98,clr:'var(--accent-indigo)'},{lbl:'7-8',cnt:72,clr:'var(--accent-blue)'},{lbl:'6-7',cnt:33,clr:'var(--accent-orange)'},{lbl:'<6',cnt:8,clr:'var(--accent-rose)'}];
+  const maxC=98;
+  document.getElementById('cgpaDistChart').innerHTML = `<div class="bar-chart" style="height:120px;">${cgpaRanges.map(r=>`<div class="bar-col"><div class="bar-val">${r.cnt}</div><div class="bar" style="height:${(r.cnt/maxC)*100}px;background:${r.clr};"></div><div class="bar-lbl">${r.lbl}</div></div>`).join('')}</div>`;
+
+  const programs=[{p:'B.Tech',n:180},{p:'M.Tech',n:45},{p:'MBA',n:60},{p:'MCA',n:38},{p:'BCA',n:22}];
+  document.getElementById('programChart').innerHTML = programs.map(p=>{const pct=Math.round((p.n/245)*100);return `<div style="margin-bottom:12px;"><div class="flex-btw mb-1"><span style="font-size:13px;font-weight:600;">${p.p}</span><span style="font-size:13px;font-weight:800;">${p.n} students (${pct}%)</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:var(--accent-indigo);"></div></div></div>`;}).join('');
+
+  document.getElementById('integrityOverview').innerHTML = `
+    <div class="g3">
+      <div class="info-tile" style="text-align:center;background:var(--pastel-green);"><div style="font-size:32px;">🔒</div><div style="font-size:22px;font-weight:800;color:var(--accent-green);">${allStudents.length||245}</div><div style="font-size:12px;font-weight:600;color:var(--accent-green);">Verified Records</div></div>
+      <div class="info-tile" style="text-align:center;background:var(--pastel-rose);"><div style="font-size:32px;">⚠️</div><div style="font-size:22px;font-weight:800;color:var(--accent-rose);">0</div><div style="font-size:12px;font-weight:600;color:var(--accent-rose);">Tampered Records</div></div>
+      <div class="info-tile" style="text-align:center;background:var(--pastel-indigo);"><div style="font-size:32px;">📋</div><div style="font-size:22px;font-weight:800;color:var(--accent-indigo);">100%</div><div style="font-size:12px;font-weight:600;color:var(--accent-indigo);">Integrity Rate</div></div>
+    </div>`;
+}
+
+async function loadHashRecords() {
+  const data = await apiReq('/students?limit=100');
+  const students = data?.students||[];
+  document.getElementById('hashTbody').innerHTML = students.map(s=>`
+    <tr>
+      <td style="font-size:12px;">${s.studentId}</td>
+      <td>${s.userId?.name||'–'}</td>
+      <td style="font-size:11px;color:var(--accent-indigo);font-family:monospace;">${truncHash(s.dataHash)}</td>
+      <td>${statusBadge(s.integrityStatus||'verified')}</td>
+      <td style="font-size:12px;">${fmtDT(s.lastVerified)}</td>
+      <td>${s.integrityStatus==='tampered'?`<button class="btn btn-soft btn-sm" onclick="repairHash('${s._id}')">🔧 Repair</button>`:'<span style="color:var(--accent-green);font-weight:700;">✓ OK</span>'}</td>
+    </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No records</td></tr>';
+}
+
+async function runIntegrityCheck() {
+  const btn=document.getElementById('integrityBtn');
+  if(btn){btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Checking...';}
+  const data = await apiReq('/admin/integrity-check',{method:'POST'});
+  if(btn){btn.disabled=false;btn.textContent='🔍 Run Full Check';}
+  if(data?.success) {
+    const r=data.results;
+    const el=document.getElementById('integrityResult');
+    if(el) el.innerHTML=`
+      <div class="stats-row" style="margin:0;">
+        <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-blue);">📊</div><div class="stat-num">${r.total}</div><div class="stat-lbl">Total</div></div>
+        <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-green);">✅</div><div class="stat-num">${r.verified}</div><div class="stat-lbl">Verified</div></div>
+        <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-rose);">⚠️</div><div class="stat-num">${r.tampered}</div><div class="stat-lbl">Tampered</div></div>
+      </div>
+      <div style="margin-top:12px;padding:12px;border-radius:10px;background:${r.tampered>0?'var(--pastel-rose)':'var(--pastel-green)'};color:${r.tampered>0?'var(--accent-rose)':'var(--accent-green)'};font-weight:700;font-size:13px;">
+        ${r.tampered>0?`⚠️ ${r.tampered} tampered record(s) detected: ${r.tamperedStudents.map(s=>s.studentId).join(', ')}`:'✅ All records verified — no tampering detected!'}
+      </div>`;
+    showToast(r.tampered>0?`⚠️ ${r.tampered} tampered records!`:'✅ All records verified!',r.tampered>0?'error':'success');
+    loadHashRecords();
+  }
+}
+
+async function repairHash(id) {
+  if(!confirm('Recompute hash and mark as verified?')) return;
+  const data = await apiReq(`/admin/repair-hash/${id}`,{method:'POST'});
+  if(data?.success){showToast('Hash repaired!','success');loadHashRecords();}
+  else showToast(data?.message||'Failed','error');
+}
+
+async function loadAuditLogs(page=1) {
+  const action=document.getElementById('logAction')?.value||'';
+  const sev=document.getElementById('logSev')?.value||'';
+  const data = await apiReq(`/audit/logs?page=${page}&limit=25&action=${action}&severity=${sev}`);
+  const sevColors={low:'b-muted',medium:'b-blue',high:'b-yellow',critical:'b-rose'};
+  document.getElementById('auditTbody').innerHTML=(data?.logs||[]).map(l=>`
+    <tr>
+      <td style="font-size:11px;white-space:nowrap;">${fmtDT(l.timestamp)}</td>
+      <td><span class="badge b-indigo" style="font-size:11px;">${l.action}</span></td>
+      <td style="font-size:13px;">${l.performedBy?.name||'System'}</td>
+      <td><span class="badge b-muted">${l.performedBy?.role||'–'}</span></td>
+      <td><span class="badge ${sevColors[l.severity]||'b-muted'}">${l.severity}</span></td>
+      <td>${statusBadge(l.status)}</td>
+    </tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No logs</td></tr>';
+  const pages=data?.pages||1;
+  document.getElementById('auditPag').innerHTML=Array.from({length:Math.min(pages,8)},(_,i)=>`<button class="btn btn-sm ${i+1===page?'btn-pri':'btn-out'}" onclick="loadAuditLogs(${i+1})">${i+1}</button>`).join('');
+}
+
+async function loadAuditSummary() {
+  const data = await apiReq('/audit/summary');
+  const sevColors={low:'b-muted',medium:'b-blue',high:'b-yellow',critical:'b-rose'};
+  document.getElementById('auditStats').innerHTML=(data?.bySeverity||[]).map(s=>`
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">📋</div><div class="stat-num">${s.count}</div><div class="stat-lbl">${s._id} severity</div></div>`).join('')
+    +`<div class="stat-card"><div class="stat-ico" style="background:var(--pastel-sky);">📅</div><div class="stat-num">${data?.recent24h||0}</div><div class="stat-lbl">Last 24 Hours</div></div>`;
+}
+
+// ── Announcement target checkbox UI ──────────────────────────────────────────
+function updateAnnTarget() {
+  const s = document.getElementById('chk-student').checked;
+  const f = document.getElementById('chk-faculty').checked;
+  const lblS = document.getElementById('lbl-student');
+  const lblF = document.getElementById('lbl-faculty');
+  lblS.style.background = s ? 'var(--pastel-indigo)' : 'var(--bg-page)';
+  lblS.style.borderColor = s ? 'var(--accent-indigo)' : 'var(--border)';
+  lblF.style.background = f ? 'var(--pastel-teal)' : 'var(--bg-page)';
+  lblF.style.borderColor = f ? 'var(--accent-teal)' : 'var(--border)';
+  const parts = [];
+  if (s) parts.push('Students');
+  if (f) parts.push('Faculty');
+  document.getElementById('annTargetHint').textContent =
+    parts.length ? `Will be sent to: ${parts.join(' & ')}` : '⚠️ Please select at least one target';
+}
+
+async function loadAnnouncements() {
+  const data = await apiReq('/announcements');
+  const anns = data?.announcements || [];
+
+  // Update sidebar badge
+  const badge = document.getElementById('badge-announcements');
+  if (badge) { badge.style.display = anns.length ? 'inline' : 'none'; badge.textContent = anns.length; }
+
+  // Update count sub-text
+  const countEl = document.getElementById('annCount');
+  if (countEl) countEl.textContent = `${anns.length} active announcement${anns.length !== 1 ? 's' : ''}`;
+
+  document.getElementById('annList').innerHTML = anns.length
+    ? anns.map(a => {
+        const targets = (a.targetRoles || []).map(r =>
+          r === 'student' ? '<span class="badge b-indigo" style="font-size:11px;">🎓 Students</span>'
+                          : '<span class="badge b-teal" style="font-size:11px;">👨‍🏫 Faculty</span>'
+        ).join(' ');
+        const priCls = a.priority === 'urgent' ? 'b-rose' : a.priority === 'high' ? 'b-orange' : a.priority === 'normal' ? 'b-indigo' : 'b-muted';
+        const borderClr = a.priority === 'urgent' ? 'var(--accent-rose)' : a.priority === 'high' ? 'var(--accent-orange)' : 'var(--accent-indigo)';
+        return `
+        <div class="card mb-3" style="border-left:4px solid ${borderClr};">
+          <div class="flex-btw mb-2">
+            <div class="flex-c gap-2 flex-wrap">
+              <span class="badge ${priCls}">${a.priority}</span>
+              <span class="badge b-muted">${a.category}</span>
+              ${targets}
+            </div>
+            <div class="flex-c gap-2">
+              <span style="font-size:12px;color:var(--text-muted);">${fmtDate(a.createdAt)} · 👁 ${a.viewCount || 0} views</span>
+              <button class="btn btn-del btn-sm" onclick="deleteAnn('${a._id}',this)">🗑</button>
+            </div>
+          </div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:6px;">${a.title}</div>
+          <div style="font-size:13px;color:var(--text-body);line-height:1.6;">${a.content}</div>
+        </div>`;
+      }).join('')
+    : emptyHTML('No announcements yet. Create one above!', '📢');
+}
+
+async function createAnnouncement() {
+  const title   = document.getElementById('annTitle').value.trim();
+  const content = document.getElementById('annContent').value.trim();
+  if (!title || !content) { showToast('Title and content are required', 'warning'); return; }
+
+  const targetRoles = [];
+  if (document.getElementById('chk-student').checked) targetRoles.push('student');
+  if (document.getElementById('chk-faculty').checked) targetRoles.push('faculty');
+  if (!targetRoles.length) { showToast('Select at least one target (Students or Faculty)', 'warning'); return; }
+
+  const data = await apiReq('/announcements', {
+    method: 'POST',
+    body: { title, content, category: document.getElementById('annCat').value, priority: document.getElementById('annPri').value, targetRoles }
+  });
+
+  if (data?.success) {
+    showToast(`✅ Announcement published to ${targetRoles.map(r => r === 'student' ? 'Students' : 'Faculty').join(' & ')}!`, 'success');
+    document.getElementById('annTitle').value   = '';
+    document.getElementById('annContent').value = '';
+    await loadAnnouncements();
+    // Update dashboard badge
+    const badge = document.getElementById('badge-announcements');
+    if (badge) { badge.style.display = 'inline'; badge.textContent = parseInt(badge.textContent || 0) + 1; }
+  } else {
+    showToast(data?.message || 'Failed to publish', 'error');
+  }
+}
+
+async function deleteAnn(id, btn) {
+  if (!confirm('Remove this announcement?')) return;
+  btn.disabled = true;
+  const data = await apiReq(`/announcements/${id}`, { method: 'DELETE' });
+  if (data?.success) { showToast('Announcement removed', 'success'); loadAnnouncements(); }
+  else { showToast('Failed to remove', 'error'); btn.disabled = false; }
+}
+
+// ── Fee section with working Send Notice ──────────────────────────────────────
+let currentNoticeStudent = null;
+
+function renderFeeSection() {
+  document.getElementById('feeStats').innerHTML = `
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-green);">💰</div><div class="stat-num">₹2.8Cr</div><div class="stat-lbl">Total Collected</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-rose);">⏳</div><div class="stat-num">₹48L</div><div class="stat-lbl">Outstanding</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">📊</div><div class="stat-num">85%</div><div class="stat-lbl">Collection Rate</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-orange);">⚠️</div><div class="stat-num">28</div><div class="stat-lbl">Defaulters</div></div>
+  `;
+
+  const sems = [{sem:'Sem 5 (Current)',collected:180,total:210},{sem:'Sem 4',collected:210,total:210},{sem:'Sem 3',collected:205,total:210},{sem:'Sem 2',collected:210,total:210}];
+  document.getElementById('feeCollStatus').innerHTML = sems.map(s => {
+    const pct = Math.round((s.collected / s.total) * 100);
+    return `<div style="margin-bottom:14px;"><div class="flex-btw mb-1"><span style="font-size:13px;font-weight:600;">${s.sem}</span><span style="font-size:13px;font-weight:800;color:${pct>=90?'var(--accent-green)':'var(--accent-orange)'};">${s.collected}/${s.total} students (${pct}%)</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${pct>=90?'var(--accent-green)':'var(--accent-orange)'}"></div></div></div>`;
+  }).join('');
+
+  const programs = [{p:'B.Tech',fee:'₹95,000'},{p:'M.Tech',fee:'₹75,000'},{p:'MBA',fee:'₹1,20,000'},{p:'MCA',fee:'₹65,000'},{p:'BCA',fee:'₹45,000'}];
+  document.getElementById('feeProgramStruct').innerHTML = programs.map(p =>
+    `<div class="fee-row"><div class="fee-lbl">${p.p}</div><div class="fee-amt">${p.fee}<span style="font-size:11px;color:var(--text-muted);font-weight:500;">/yr</span></div></div>`
+  ).join('');
+
+  const defaulters = [
+    {id:'STU2021003', name:'Rohit Verma',  prog:'B.Tech / ECE',  due:'₹33,000', days:45},
+    {id:'STU2022004', name:'Vikram Singh', prog:'MBA',            due:'₹60,000', days:30},
+    {id:'STU2021008', name:'Pooja Nair',   prog:'B.Tech / Mech', due:'₹33,000', days:22},
+    {id:'STU2023002', name:'Anil Kumar',   prog:'MCA',            due:'₹32,500', days:15},
+  ];
+  document.getElementById('defaultersTbody').innerHTML = defaulters.map(d => `
+    <tr>
+      <td>${d.id}</td><td>${d.name}</td><td>${d.prog}</td>
+      <td style="color:var(--accent-rose);font-weight:800;">${d.due}</td>
+      <td><span class="badge ${d.days > 30 ? 'b-rose' : 'b-yellow'}">${d.days} days</span></td>
+      <td>
+        <button class="btn btn-soft btn-sm" onclick="openFeeNotice('${d.id}','${d.name}','${d.due}')">
+          📨 Send Notice
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+function openFeeNotice(studentId, studentName, dueAmt) {
+  currentNoticeStudent = { id: studentId, name: studentName, due: dueAmt };
+  document.getElementById('feeNoticeTarget').textContent = `Sending notice to: ${studentName} (${studentId})`;
+  document.getElementById('noticeDueAmt').value = dueAmt;
+  document.getElementById('noticeDueDate').valueAsDate = new Date(Date.now() + 14 * 24 * 3600 * 1000);
+  document.getElementById('noticeMessage').value =
+    `Dear ${studentName},\n\nThis is a reminder that your fee payment of ${dueAmt} is due. Please make the payment at the earliest to avoid any academic disruptions.\n\nRegards,\nAdministration`;
+  document.getElementById('feeNoticeModal').classList.add('open');
+}
+
+function sendFeeNotice() {
+  if (!currentNoticeStudent) return;
+  const type    = document.getElementById('noticeType').value;
+  const message = document.getElementById('noticeMessage').value.trim();
+  const dueDate = document.getElementById('noticeDueDate').value;
+  const btn     = document.getElementById('sendNoticeBtn');
+
+  if (!message) { showToast('Write a message before sending', 'warning'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Sending...';
+
+  // Store the notice in localStorage so student sees it in their notifications
+  try {
+    const notices = JSON.parse(localStorage.getItem('atds_fee_notices') || '[]');
+    notices.push({
+      studentId:   currentNoticeStudent.id,
+      studentName: currentNoticeStudent.name,
+      type,
+      message,
+      dueAmt:      currentNoticeStudent.due,
+      dueDate,
+      sentAt:      new Date().toISOString(),
+      sentBy:      getUser()?.name || 'Admin',
+      read:        false
+    });
+    localStorage.setItem('atds_fee_notices', JSON.stringify(notices));
+  } catch(e) {}
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = '📨 Send Notice';
+    closeModal('feeNoticeModal');
+    const typeLabel = { reminder: 'Payment Reminder', warning: 'Warning Notice', final: 'Final Notice' }[type];
+    showToast(`✅ ${typeLabel} sent to ${currentNoticeStudent.name}!`, 'success');
+    currentNoticeStudent = null;
+  }, 800);
+}
+
+// ── Edit Request approval — fixed to handle all students ──────────────────────
+async function loadEditRequests(status = 'pending') {
+  const data = await apiReq(`/admin/edit-requests?status=${status}`);
+  const reqs  = data?.requests || [];
+
+  if (!reqs.length) {
+    document.getElementById('reqsContainer').innerHTML = emptyHTML(`No ${status} requests`, '📋');
+    return;
+  }
+
+  document.getElementById('reqsContainer').innerHTML = `
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Request ID</th><th>Faculty</th><th>Student</th><th>Change</th><th>Reason</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${reqs.map(r => {
+        const studentLabel = r.student?.studentId || r.student?.userId?.name || 'Unknown Student';
+        const changeLabel  = r.requestedChanges?.semesterRecord
+          ? `Sem ${r.requestedChanges.semesterRecord.semester} GPA → ${r.requestedChanges.semesterRecord.gpa}`
+          : 'See details';
+        // Safe JSON encoding for the review modal
+        const safeJson = JSON.stringify(r).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        return `<tr>
+          <td style="font-size:11px;">${r.requestId}</td>
+          <td>${r.faculty?.name || '–'}<div style="font-size:11px;color:var(--text-muted);">${r.faculty?.userId || ''}</div></td>
+          <td>${studentLabel}</td>
+          <td style="font-size:12px;color:var(--accent-indigo);">${changeLabel}</td>
+          <td style="font-size:12px;max-width:150px;">${r.reason}</td>
+          <td style="font-size:12px;">${fmtDate(r.createdAt)}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>${r.status === 'pending'
+            ? `<button class="btn btn-soft btn-sm" onclick='openReview("${r._id}")'>✍️ Review</button>`
+            : `<span style="font-size:11px;color:var(--text-muted);">${r.reviewedBy?.name || '–'}</span>`
+          }</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+
+  // Store requests in memory for the modal to access
+  window._editRequests = reqs;
+}
+
+function loadMyRequests() { loadEditRequests('pending'); }
+
+function openReview(id) {
+  const r = (window._editRequests || []).find(r => r._id === id);
+  if (!r) return;
+  currentReviewId = id;
+  const changes = r.requestedChanges?.semesterRecord || r.requestedChanges || {};
+  const studentLabel = r.student?.studentId || r.student?.userId?.name || 'Unknown Student';
+
+  document.getElementById('reviewContent').innerHTML = `
+    <div class="info-grid mb-3">
+      <div class="info-tile"><div class="it-lbl">Faculty</div><div class="it-val">${r.faculty?.name || '–'} (${r.faculty?.userId || ''})</div></div>
+      <div class="info-tile"><div class="it-lbl">Student</div><div class="it-val">${studentLabel}</div></div>
+    </div>
+    <div class="it-lbl mb-1">Reason for Edit</div>
+    <div style="font-size:13px;padding:10px;background:var(--bg-page);border-radius:8px;margin-bottom:12px;line-height:1.5;">${r.reason}</div>
+    <div class="it-lbl mb-1">Requested Changes</div>
+    <div style="font-size:12px;background:var(--pastel-indigo);border-radius:8px;padding:12px;font-weight:600;color:var(--accent-indigo);white-space:pre-wrap;">${JSON.stringify(changes, null, 2)}</div>
+    <div style="margin-top:12px;background:var(--pastel-yellow);border-radius:10px;padding:10px 14px;font-size:12px;font-weight:600;color:var(--accent-yellow);">
+      ⚡ Approving will apply these changes and recompute the SHA-256 hash for data integrity.
+    </div>`;
+  document.getElementById('reviewNote').value = '';
+  document.getElementById('reviewModal').classList.add('open');
+}
+
+async function reviewReq(action) {
+  if (!currentReviewId) return;
+  const btn = document.getElementById(action === 'approve' ? 'approveBtn' : 'rejectBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner"></div> ${action === 'approve' ? 'Approving' : 'Rejecting'}...`;
+
+  const data = await apiReq(`/admin/edit-requests/${currentReviewId}/${action}`, {
+    method: 'POST',
+    body: { reviewNote: document.getElementById('reviewNote').value.trim() }
+  });
+
+  btn.disabled = false;
+  btn.textContent = action === 'approve' ? '✅ Approve' : '❌ Reject';
+
+  if (data?.success) {
+    showToast(`Request ${action === 'approve' ? 'approved ✅' : 'rejected ❌'}!`, action === 'approve' ? 'success' : 'info');
+    closeModal('reviewModal');
+    const currentFilter = document.getElementById('reqFilter')?.value || 'pending';
+    loadEditRequests(currentFilter);
+    loadDashboard(); // refresh stats
+  } else {
+    showToast(data?.message || `Failed to ${action}`, 'error');
+  }
+}
+
+function openAddUser(role) {
+  addUserRole = role;
+  semesterRecords = [];
+  document.getElementById('addUserTitle').textContent = `Add New ${role === 'student' ? 'Student' : 'Faculty'}`;
+  document.getElementById('stuFields').style.display = role === 'student' ? 'block' : 'none';
+  ['nuId', 'nuName', 'nuEmail', 'nuPass'].forEach(id => document.getElementById(id).value = '');
+  ['nuProgram', 'nuBranch', 'nuBatch', 'nuSemester', 'nuGPA', 'nuCredits', 'nuEarned', 'nuYear'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.getAttribute('value') || '';
+  });
+  document.getElementById('semestersList').innerHTML = '';
+  document.getElementById('addUserModal').classList.add('open');
+}
+
+function addSemesterRecord() {
+  const sem = parseInt(document.getElementById('nuSemester').value) || 1;
+  const gpa = parseFloat(document.getElementById('nuGPA').value) || 0;
+  const credits = parseInt(document.getElementById('nuCredits').value) || 0;
+  const earned = parseInt(document.getElementById('nuEarned').value) || 0;
+  const year = parseInt(document.getElementById('nuYear').value) || 1;
+
+  if (sem < 1 || sem > 10) { showToast('Semester must be 1-10', 'warning'); return; }
+  if (gpa < 0 || gpa > 10) { showToast('GPA must be 0-10', 'warning'); return; }
+  if (credits < 0 || earned < 0) { showToast('Credits must be non-negative', 'warning'); return; }
+
+  // Check for duplicate semester
+  if (semesterRecords.some(s => s.semester === sem)) { showToast(`Semester ${sem} already added`, 'warning'); return; }
+
+  const record = { semester: sem, gpa, totalCredits: credits, earnedCredits: earned, year, subjects: [] };
+  semesterRecords.push(record);
+  renderSemestersList();
+  
+  // Reset input fields for next entry
+  document.getElementById('nuSemester').value = Math.max(sem + 1, 1);
+  ['nuGPA', 'nuCredits', 'nuEarned', 'nuYear'].forEach(id => document.getElementById(id).value = '0');
+  showToast(`Semester ${sem} added`, 'success');
+}
+
+function removeSemesterRecord(idx) {
+  semesterRecords.splice(idx, 1);
+  renderSemestersList();
+  showToast('Semester record removed', 'info');
+}
+
+function renderSemestersList() {
+  const list = document.getElementById('semestersList');
+  if (semesterRecords.length === 0) {
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = semesterRecords.map((s, i) => `
+    <div style="background:var(--pastel-indigo);border:1px solid var(--accent-indigo);border-radius:8px;padding:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:12px;">
+        <span style="font-weight:700;">Sem ${s.semester}</span> — 
+        GPA: <strong>${s.gpa}</strong>, 
+        Credits: ${s.totalCredits}/${s.earnedCredits}, 
+        Year: ${s.year}
+      </div>
+      <button type="button" class="btn btn-del btn-sm" onclick="removeSemesterRecord(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+
+async function submitAddUser() {
+  const btn = document.getElementById('addUserBtn');
+  const payload = {
+    userId: document.getElementById('nuId').value.trim(),
+    name: document.getElementById('nuName').value.trim(),
+    email: document.getElementById('nuEmail').value.trim(),
+    password: document.getElementById('nuPass').value,
+    role: addUserRole,
+    department: document.getElementById('nuDept').value.trim(),
+    phone: document.getElementById('nuPhone').value.trim()
+  };
+  
+  if (!payload.userId || !payload.name || !payload.email || !payload.password) {
+    showToast('Fill required fields', 'warning');
+    return;
+  }
+  
+  if (addUserRole === 'student') {
+    payload.studentData = {
+      program: document.getElementById('nuProgram').value,
+      branch: document.getElementById('nuBranch').value.trim(),
+      batch: parseInt(document.getElementById('nuBatch').value) || new Date().getFullYear(),
+      semesterRecords: semesterRecords
+    };
+  }
+  
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+  const data = await apiReq('/admin/users', { method: 'POST', body: payload });
+  btn.disabled = false;
+  btn.textContent = 'Create User';
+  
+  if (data?.success) {
+    showToast(`${addUserRole === 'student' ? 'Student' : 'Faculty'} created with ${semesterRecords.length} semester record(s)!`, 'success');
+    closeModal('addUserModal');
+    semesterRecords = [];
+    loadUsers();
+  } else {
+    showToast(data?.message || 'Failed', 'error');
+  }
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-ov'))e.target.classList.remove('open');});
+init();
+</script>
+</body>
+</html>

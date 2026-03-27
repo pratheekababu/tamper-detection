@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ATDS — Faculty Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+
+:root {
+  --bg-page:       #f0f4ff;
+  --bg-surface:    #ffffff;
+  --bg-card:       #ffffff;
+  --bg-sidebar:    #ffffff;
+
+  --pastel-blue:   #dbeafe;
+  --pastel-purple: #ede9fe;
+  --pastel-pink:   #fce7f3;
+  --pastel-green:  #d1fae5;
+  --pastel-yellow: #fef9c3;
+  --pastel-orange: #ffedd5;
+  --pastel-teal:   #ccfbf1;
+  --pastel-rose:   #ffe4e6;
+  --pastel-indigo: #e0e7ff;
+  --pastel-sky:    #e0f2fe;
+
+  --accent-blue:   #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-pink:   #ec4899;
+  --accent-green:  #10b981;
+  --accent-yellow: #f59e0b;
+  --accent-orange: #f97316;
+  --accent-teal:   #14b8a6;
+  --accent-rose:   #f43f5e;
+  --accent-indigo: #6366f1;
+  --accent-sky:    #0ea5e9;
+
+  --border:        #e8edf8;
+  --border-soft:   #f0f4ff;
+  --shadow-sm:     0 1px 8px rgba(99,102,241,0.06);
+  --shadow:        0 4px 24px rgba(99,102,241,0.10);
+  --shadow-lg:     0 8px 40px rgba(99,102,241,0.14);
+
+  --text-dark:     #1e293b;
+  --text-body:     #475569;
+  --text-muted:    #94a3b8;
+  --text-light:    #cbd5e1;
+
+  --sidebar-w:     258px;
+  --header-h:      68px;
+  --radius:        16px;
+  --radius-sm:     10px;
+  --radius-lg:     24px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 10%,rgba(219,234,254,0.55) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 80%,rgba(237,233,254,0.45) 0%,transparent 60%);
+}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-indigo);}
+
+/* Layout */
+.app{display:flex;min-height:100vh;position:relative;z-index:1;}
+
+/* Sidebar */
+.sidebar {
+  width:var(--sidebar-w);background:var(--bg-sidebar);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  display:flex;flex-direction:column;
+  box-shadow:4px 0 24px rgba(99,102,241,0.07);
+  overflow-y:auto;transition:transform 0.3s ease;
+}
+
+.sidebar-brand {
+  padding:20px 18px 16px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border-soft);
+}
+.brand-logo {
+  width:42px;height:42px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.brand-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--text-dark);line-height:1.2;}
+.brand-tagline{font-size:10px;color:var(--text-muted);font-weight:500;letter-spacing:0.8px;text-transform:uppercase;}
+
+.sidebar-user {
+  margin:14px 12px 6px;padding:13px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;gap:10px;
+}
+.u-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;}
+.u-name{font-size:13px;font-weight:700;color:var(--text-dark);}
+.u-role{font-size:11px;color:var(--text-muted);font-weight:500;}
+
+.nav-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);padding:10px 16px 4px;}
+
+.nav-item {
+  display:flex;align-items:center;gap:9px;padding:9px 10px;margin:2px 8px;
+  border-radius:var(--radius-sm);font-size:13.5px;font-weight:600;
+  color:var(--text-body);cursor:pointer;border:none;background:none;
+  width:calc(100% - 16px);text-align:left;transition:all 0.18s;
+}
+.nav-item:hover{background:var(--bg-page);color:var(--text-dark);}
+.nav-item.active{font-weight:700;color:var(--text-dark);}
+
+.nav-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:transform 0.18s;}
+.nav-item:hover .nav-ico,.nav-item.active .nav-ico{transform:scale(1.08);}
+
+.nav-badge{margin-left:auto;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:700;}
+
+.sidebar-footer{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border-soft);}
+.logout-btn{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;color:var(--accent-rose);background:none;border:none;width:100%;cursor:pointer;transition:background 0.15s;font-family:'Nunito',sans-serif;}
+.logout-btn:hover{background:var(--pastel-rose);}
+
+/* Main */
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh;}
+
+/* Topbar */
+.topbar{
+  height:var(--header-h);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;
+  padding:0 26px;gap:14px;position:sticky;top:0;z-index:100;
+}
+.topbar-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--text-dark);flex:1;}
+.tb-icon{width:36px;height:36px;border-radius:50%;background:var(--bg-page);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.15s;position:relative;}
+.tb-icon:hover{background:var(--pastel-indigo);border-color:var(--accent-indigo);}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--accent-rose);border-radius:50%;border:2px solid white;}
+
+/* Page */
+.page{padding:26px;flex:1;}
+.page-head{margin-bottom:22px;}
+.page-head h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:3px;}
+.page-head p{font-size:13px;color:var(--text-muted);font-weight:500;}
+
+/* Section */
+.section{display:none;animation:fadeUp 0.3s ease;}
+.section.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Card */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);transition:box-shadow 0.2s;}
+.card:hover{box-shadow:var(--shadow);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-size:14px;font-weight:700;color:var(--text-dark);}
+.card-sub{font-size:12px;color:var(--text-muted);font-weight:500;margin-top:2px;}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;margin-bottom:20px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:17px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow-sm);transition:transform 0.18s,box-shadow 0.18s;cursor:default;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.stat-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.stat-num{font-size:24px;font-weight:800;color:var(--text-dark);line-height:1;}
+.stat-lbl{font-size:12px;font-weight:600;color:var(--text-muted);}
+.stat-chg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block;}
+.up{background:var(--pastel-green);color:var(--accent-green);}
+.dn{background:var(--pastel-rose);color:var(--accent-rose);}
+.nt{background:var(--pastel-yellow);color:var(--accent-yellow);}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius-sm);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead tr{background:var(--bg-page);}
+thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border-soft);transition:background 0.12s;}
+tbody tr:hover{background:var(--bg-page);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:12px 13px;color:var(--text-body);vertical-align:middle;}
+tbody td:first-child{color:var(--text-dark);font-weight:700;}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;}
+.b-blue   {background:var(--pastel-blue);  color:var(--accent-blue);}
+.b-purple {background:var(--pastel-purple);color:var(--accent-purple);}
+.b-pink   {background:var(--pastel-pink);  color:var(--accent-pink);}
+.b-green  {background:var(--pastel-green); color:var(--accent-green);}
+.b-yellow {background:var(--pastel-yellow);color:var(--accent-yellow);}
+.b-orange {background:var(--pastel-orange);color:var(--accent-orange);}
+.b-teal   {background:var(--pastel-teal);  color:var(--accent-teal);}
+.b-rose   {background:var(--pastel-rose);  color:var(--accent-rose);}
+.b-indigo {background:var(--pastel-indigo);color:var(--accent-indigo);}
+.b-sky    {background:var(--pastel-sky);   color:var(--accent-sky);}
+.b-muted  {background:#f1f5f9;color:var(--text-muted);}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:24px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;border:none;transition:all 0.18s;text-decoration:none;white-space:nowrap;}
+.btn-pri{background:var(--accent-indigo);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,0.25);}
+.btn-pri:hover{background:#4f46e5;transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,0.35);}
+.btn-soft{background:var(--pastel-indigo);color:var(--accent-indigo);}
+.btn-soft:hover{background:var(--accent-indigo);color:#fff;}
+.btn-ok{background:var(--accent-green);color:#fff;}
+.btn-ok:hover{filter:brightness(1.05);}
+.btn-del{background:var(--accent-rose);color:#fff;}
+.btn-del:hover{filter:brightness(1.05);}
+.btn-out{background:#fff;border:1.5px solid var(--border);color:var(--text-body);}
+.btn-out:hover{border-color:var(--accent-indigo);color:var(--accent-indigo);background:var(--pastel-indigo);}
+.btn-ghost{background:transparent;color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg-page);}
+.btn-sm{padding:6px 13px;font-size:12px;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;}
+
+/* Forms */
+.fg{margin-bottom:15px;}
+.flbl{display:block;font-size:11px;font-weight:700;color:var(--text-body);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.fctrl{width:100%;padding:9px 13px;background:var(--bg-page);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dark);font-size:13.5px;font-family:'Nunito',sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.fctrl:focus{border-color:var(--accent-indigo);box-shadow:0 0 0 3px rgba(99,102,241,0.1);background:#fff;}
+.fctrl::placeholder{color:var(--text-light);}
+select.fctrl{cursor:pointer;}
+textarea.fctrl{resize:vertical;min-height:88px;}
+
+/* Progress */
+.prog-wrap{background:var(--bg-page);border-radius:99px;height:7px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:99px;transition:width 1.1s ease;}
+
+/* Profile hero */
+.prof-hero{display:flex;align-items:center;gap:20px;margin-bottom:22px;padding:22px;border-radius:var(--radius);background:var(--bg-page);}
+.prof-av-lg{width:82px;height:82px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;flex-shrink:0;border:4px solid #fff;box-shadow:var(--shadow);}
+.prof-name{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;}
+.prof-id{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:2px;}
+
+/* Info grid */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
+.info-tile{background:var(--bg-page);border-radius:var(--radius-sm);padding:13px;}
+.it-lbl{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;}
+.it-val{font-size:14px;font-weight:700;color:var(--text-dark);}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:16px;}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+
+/* Attendance ring */
+.att-ring{position:relative;width:96px;height:96px;}
+.att-ring svg{transform:rotate(-90deg);}
+.att-ring-bg{fill:none;stroke:var(--border);stroke-width:10;}
+.att-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease;}
+.att-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.att-pct{font-size:17px;font-weight:800;color:var(--text-dark);}
+.att-sub{font-size:10px;color:var(--text-muted);font-weight:600;}
+
+/* Timetable */
+.tt-grid{display:grid;grid-template-columns:65px repeat(5,1fr);gap:5px;font-size:12px;}
+.tt-hd{padding:7px 5px;background:var(--bg-page);border-radius:7px;font-weight:700;text-align:center;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+.tt-tm{padding:9px 4px;background:var(--bg-page);border-radius:7px;font-weight:700;text-align:center;color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:11px;}
+.tt-cell{padding:9px 6px;border-radius:9px;font-weight:700;font-size:11.5px;text-align:center;line-height:1.3;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tt-empty{background:var(--bg-page);}
+
+/* Assignment */
+.asgn-card{padding:13px;border-radius:var(--radius-sm);border-left:4px solid;background:var(--bg-page);margin-bottom:9px;transition:transform 0.15s,box-shadow 0.15s;}
+.asgn-card:hover{transform:translateX(4px);box-shadow:var(--shadow-sm);}
+
+/* Notification */
+.notif-item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border-soft);}
+.notif-item:last-child{border-bottom:none;}
+.notif-ico-wrap{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+
+/* Fee */
+.fee-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border-soft);}
+.fee-row:last-child{border-bottom:none;}
+.fee-lbl{font-size:13px;font-weight:600;color:var(--text-body);}
+.fee-amt{font-size:14px;font-weight:800;color:var(--text-dark);}
+
+/* Bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:7px;height:100px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.bar{border-radius:6px 6px 0 0;transition:height 1s ease;width:100%;}
+.bar-lbl{font-size:11px;color:var(--text-muted);font-weight:600;}
+.bar-val{font-size:11px;font-weight:800;color:var(--text-dark);}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(30,41,59,0.25);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:var(--radius-lg);padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:scale(0.95);transition:transform 0.2s;}
+.modal-ov.open .modal{transform:scale(1);}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:3px;}
+.modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+
+/* Utils */
+.flex{display:flex;}.flex-btw{display:flex;align-items:center;justify-content:space-between;}.flex-c{display:flex;align-items:center;}.flex-cc{display:flex;align-items:center;justify-content:center;}
+.gap-2{gap:8px;}.gap-3{gap:12px;}.gap-4{gap:16px;}
+.mt-2{margin-top:8px;}.mt-3{margin-top:14px;}.mt-4{margin-top:20px;}
+.mb-2{margin-bottom:8px;}.mb-3{margin-bottom:14px;}.mb-4{margin-bottom:20px;}
+.w100{width:100%;}.txt-muted{color:var(--text-muted);}.txt-sm{font-size:13px;}.txt-xs{font-size:12px;}.fw7{font-weight:700;}.fw8{font-weight:800;}.hidden{display:none!important;}
+
+.spinner{display:inline-block;width:17px;height:17px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#toastBox{position:fixed;top:20px;right:20px;z-index:9999;}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .page{padding:14px;}
+  .g2,.g3,.g12,.g21{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+}
+
+</style>
+<style>
+body{margin:0;font-family:Nunito,system-ui,sans-serif;background:#f0f4ff;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:258px;background:#fff;border-right:1px solid #e8edf8;position:fixed;top:0;left:0;bottom:0;z-index:200;overflow-y:auto;box-shadow:4px 0 24px rgba(99,102,241,0.07);}
+.main{flex:1;margin-left:258px;display:flex;flex-direction:column;}
+.topbar{height:68px;background:rgba(255,255,255,0.9);border-bottom:1px solid #e8edf8;display:flex;align-items:center;padding:0 26px;gap:14px;position:sticky;top:0;z-index:100;}
+.page{padding:26px;flex:1;}
+.section{display:none;}.section.active{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar"></aside>
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="flex-c gap-3">
+      <div class="tb-icon" onclick="logout()" title="Sign Out">🚪</div>
+    </div>
+  </header>
+  <main class="page">
+
+    <!-- ══ DASHBOARD ══ -->
+    <section id="sec-dashboard" class="section active">
+      <div class="page-head"><h1 id="facWelcome">Welcome!</h1><p>Faculty overview for today</p></div>
+      <div class="stats-row" id="facStats"></div>
+      <div class="g2 mb-4">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📅 Today's Schedule</div><div class="card-sub" id="todayDateFac"></div></div>
+          <div id="facTodaySchedule"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔔 Recent Activity</div></div>
+          <div id="facRecentActivity"></div>
+        </div>
+      </div>
+      <div class="g3">
+        <div class="card" style="cursor:pointer;text-align:center;" onclick="showSection('students')">
+          <div style="font-size:32px;margin-bottom:8px;">🎓</div>
+          <div style="font-weight:700;font-size:14px;">My Students</div>
+          <div id="qlStudents" style="font-size:22px;font-weight:800;color:var(--accent-teal);margin-top:4px;">–</div>
+        </div>
+        <div class="card" style="cursor:pointer;text-align:center;" onclick="showSection('marks')">
+          <div style="font-size:32px;margin-bottom:8px;">📝</div>
+          <div style="font-weight:700;font-size:14px;">Marks Entry</div>
+          <div style="font-size:22px;font-weight:800;color:var(--accent-indigo);margin-top:4px;">6 Subjects</div>
+        </div>
+        <div class="card" style="cursor:pointer;text-align:center;" onclick="showSection('requests')">
+          <div style="font-size:32px;margin-bottom:8px;">📋</div>
+          <div style="font-weight:700;font-size:14px;">Pending Requests</div>
+          <div id="qlRequests" style="font-size:22px;font-weight:800;color:var(--accent-orange);margin-top:4px;">–</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PROFILE ══ -->
+    <section id="sec-profile" class="section">
+      <div class="page-head"><h1>My Profile</h1><p>Faculty profile and information</p></div>
+      <div class="card mb-4">
+        <div class="prof-hero" id="facProfHero"></div>
+        <div class="info-grid" id="facProfGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📚 Subjects Teaching</div></div>
+        <div class="g3" id="facSubjects"></div>
+      </div>
+    </section>
+
+    <!-- ══ STUDENTS ══ -->
+    <section id="sec-students" class="section">
+      <div class="page-head"><h1>Student List</h1><p>All students under your supervision</p></div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Student Directory</div></div>
+          <div class="flex-c gap-2">
+            <input type="text" class="fctrl" style="width:200px;" placeholder="🔍 Search..." id="facStudSearch" oninput="searchFacStudents()"/>
+            <select class="fctrl" style="width:130px;" id="branchFilter" onchange="searchFacStudents()">
+              <option value="">All Branches</option>
+              <option>Computer Science</option><option>Electronics</option><option>Mechanical</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Student ID</th><th>Name</th><th>Program</th><th>CGPA</th><th>Attendance</th><th>Integrity</th><th>Action</th></tr></thead>
+          <tbody id="facStudTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- ══ MARKS ══ -->
+    <section id="sec-marks" class="section">
+      <div class="page-head"><h1>Mark Management</h1><p>Enter and manage student marks</p></div>
+      <div class="g12 mb-4">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Select Class</div></div>
+          <div class="fg"><label class="flbl">Subject</label>
+            <select class="fctrl" id="markSubject" onchange="loadMarksTable()">
+              <option value="">-- Select Subject --</option>
+              <option>Data Structures</option><option>Algorithms</option><option>DBMS</option>
+              <option>Operating Systems</option><option>Computer Networks</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Exam Type</label>
+            <select class="fctrl" id="markExamType">
+              <option>Internal Assessment 1</option><option>Internal Assessment 2</option>
+              <option>Mid Semester</option><option>End Semester</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Max Marks</label>
+            <input type="number" class="fctrl" id="markMax" value="50"/>
+          </div>
+          <button class="btn btn-pri w100" onclick="saveMarks()">💾 Save Marks</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Mark Entry</div><div class="card-sub">Enter marks for each student</div></div>
+          <div id="markTable"><div style="text-align:center;padding:30px;color:var(--text-muted);">Select a subject to enter marks</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📈 Class Performance Summary</div></div>
+        <div id="markSummary" class="stats-row"></div>
+      </div>
+    </section>
+
+    <!-- ══ ATTENDANCE ══ -->
+    <section id="sec-attendance" class="section">
+      <div class="page-head"><h1>Attendance Management</h1><p>Mark and track student attendance</p></div>
+      <div class="card mb-4">
+        <div class="card-header"><div class="card-title">Mark Today's Attendance</div></div>
+        <div class="g3 mb-4">
+          <div class="fg"><label class="flbl">Subject</label>
+            <select class="fctrl" id="attSubject">
+              <option>Data Structures</option><option>Algorithms</option><option>DBMS</option><option>Operating Systems</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Date</label>
+            <input type="date" class="fctrl" id="attDate"/>
+          </div>
+          <div class="fg"><label class="flbl">Class Type</label>
+            <select class="fctrl"><option>Lecture</option><option>Lab</option><option>Tutorial</option></select>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Student ID</th><th>Name</th><th>Status</th><th>Remark</th></tr></thead>
+          <tbody id="attMarkTbody"></tbody>
+        </table></div>
+        <button class="btn btn-pri mt-3" onclick="saveAttendance()">💾 Save Attendance</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Attendance Summary by Subject</div></div>
+        <div id="attSummary"></div>
+      </div>
+    </section>
+
+    <!-- ══ ASSIGNMENTS ══ -->
+    <section id="sec-assignments" class="section">
+      <div class="page-head"><h1>Assignments</h1><p>Create and manage assignments for students</p></div>
+      <div class="card mb-4">
+        <div class="card-header"><div class="card-title">➕ Create New Assignment</div><div class="card-sub">Posted assignments are instantly visible to all students</div></div>
+        <div class="g2">
+          <div class="fg"><label class="flbl">Title *</label><input type="text" class="fctrl" id="asgnTitle" placeholder="Assignment title"/></div>
+          <div class="fg"><label class="flbl">Subject *</label>
+            <select class="fctrl" id="asgnSubject">
+              <option>Data Structures</option><option>Algorithms</option><option>DBMS</option><option>Operating Systems</option><option>Computer Networks</option><option>Software Engineering</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Due Date *</label><input type="date" class="fctrl" id="asgnDue"/></div>
+          <div class="fg"><label class="flbl">Max Marks</label><input type="number" class="fctrl" id="asgnMarks" value="10"/></div>
+          <div class="fg"><label class="flbl">Priority</label>
+            <select class="fctrl" id="asgnPriority">
+              <option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Target Batch</label>
+            <select class="fctrl" id="asgnBatch">
+              <option value="all">All Students</option><option value="2021">Batch 2021</option><option value="2022">Batch 2022</option><option value="2023">Batch 2023</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label class="flbl">Description *</label><textarea class="fctrl" id="asgnDesc" placeholder="Describe the assignment clearly — this will be shown to students..." rows="3"></textarea></div>
+        <button class="btn btn-pri" onclick="createAssignment()">📤 Post to Students</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">📋 Posted Assignments</div><div class="card-sub">Click "View Submissions" to see which students have submitted</div></div>
+          <button class="btn btn-soft btn-sm" onclick="renderFacAssignments()">🔄 Refresh</button>
+        </div>
+        <div id="facAsgnList"></div>
+      </div>
+    </section>
+
+    <!-- ══ TIMETABLE ══ -->
+    <section id="sec-timetable" class="section">
+      <div class="page-head"><h1>Timetable</h1><p>Your weekly teaching schedule</p></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📅 Weekly Teaching Schedule</div></div>
+        <div id="facTTGrid" style="overflow-x:auto;"></div>
+      </div>
+    </section>
+
+    <!-- ══ ANNOUNCEMENTS ══ -->
+    <section id="sec-announcements" class="section">
+      <div class="page-head"><h1>Announcements</h1><p>Announcements from admin — download PDF copies for record</p></div>
+      <div id="facAnnList"></div>
+    </section>
+
+    <!-- ══ REQUESTS ══ -->
+    <section id="sec-requests" class="section">
+      <div class="page-head"><h1>Edit Requests</h1><p>Submit and track data edit requests</p></div>
+      <div class="card mb-4">
+        <div class="card-header"><div class="card-title">📝 New Edit Request</div><div class="card-sub">All edits require admin approval</div></div>
+        <div class="g2">
+          <div class="fg"><label class="flbl">Student</label>
+            <select class="fctrl" id="reqStudent" onchange="loadStudentForReq(this.value)">
+              <option value="">-- Select Student --</option>
+            </select>
+          </div>
+          <div class="fg"><label class="flbl">Request Type</label>
+            <select class="fctrl" id="reqType" onchange="toggleRequestMode()">
+              <option value="edit">Edit Existing Semester</option>
+              <option value="new">Add New Semester</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Edit Semester Mode -->
+        <div id="editMode" style="display:block;">
+          <div class="g3">
+            <div class="fg"><label class="flbl">Semester</label>
+              <select class="fctrl" id="reqSem"><option value="">-- Select Semester --</option></select>
+            </div>
+            <div class="fg"><label class="flbl">New GPA</label><input type="number" class="fctrl" id="reqGpa" step="0.01" min="0" max="10" placeholder="e.g. 8.50"/></div>
+            <div class="fg"><label class="flbl">Year</label><input type="number" class="fctrl" id="reqYear" placeholder="e.g. 2023"/></div>
+          </div>
+        </div>
+
+        <!-- Add New Semester Mode -->
+        <div id="newMode" style="display:none;">
+          <div class="g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+            <div class="fg"><label class="flbl">Semester *</label><input type="number" class="fctrl" id="newSem" min="1" max="10" placeholder="5" /></div>
+            <div class="fg"><label class="flbl">GPA *</label><input type="number" class="fctrl" id="newGpa" step="0.01" min="0" max="10" placeholder="8.50"/></div>
+            <div class="fg"><label class="flbl">Total Credits *</label><input type="number" class="fctrl" id="newTotalCred" placeholder="24" value="24"/></div>
+            <div class="fg"><label class="flbl">Earned Credits *</label><input type="number" class="fctrl" id="newEarnedCred" placeholder="24" value="24"/></div>
+          </div>
+          <div class="fg"><label class="flbl">Year *</label><input type="number" class="fctrl" id="newYear" placeholder="e.g. 2023"/></div>
+        </div>
+
+        <div class="fg"><label class="flbl">Reason *</label><textarea class="fctrl" id="reqReason" placeholder="Explain the reason for this edit..."></textarea></div>
+        <button class="btn btn-pri" onclick="submitRequest()" id="reqBtn">📤 Submit Request</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">My Requests</div><button class="btn btn-soft btn-sm" onclick="loadMyRequests()">🔄 Refresh</button></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Request ID</th><th>Student</th><th>Reason</th><th>Submitted</th><th>Status</th><th>Admin Note</th></tr></thead>
+          <tbody id="reqTbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+</div>
+
+<!-- Submissions Modal -->
+<div class="modal-ov" id="submissionsModal">
+  <div class="modal" style="max-width:620px;">
+    <div class="flex-btw mb-3">
+      <div><div class="modal-title" id="submissionsTitle">Submissions</div><div class="modal-sub" id="submissionsSub">Student submission status</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('submissionsModal')">✕</button>
+    </div>
+    <div id="submissionsContent"></div>
+  </div>
+</div>
+
+<!-- Student Detail Modal -->
+<div class="modal-ov" id="studModal">
+  <div class="modal"><div class="flex-btw mb-4"><div class="modal-title">Student Details</div><button class="btn btn-ghost btn-sm" onclick="closeModal('studModal')">✕</button></div><div id="studModalContent"></div></div>
+</div>
+
+<script>
+// ── API ───────────────────────────────────────────────────────────────────────
+async function apiReq(endpoint, opts = {}) {
+  const token = localStorage.getItem('atds_token');
+  const cfg = {
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    ...opts
+  };
+  if (cfg.body && typeof cfg.body === 'object') cfg.body = JSON.stringify(cfg.body);
+  try {
+    const res = await fetch(`/api${endpoint}`, cfg);
+    const data = await res.json();
+    if (res.status === 401) { logout(); return null; }
+    return data;
+  } catch (e) {
+    showToast('Connection error', 'error');
+    return null;
+  }
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function getUser()  { return JSON.parse(localStorage.getItem('atds_user') || 'null'); }
+function getToken() { return localStorage.getItem('atds_token'); }
+
+function requireAuth(roles = []) {
+  const user = getUser(), token = getToken();
+  if (!user || !token) { window.location.href = '/pages/login.html'; return null; }
+  if (roles.length && !roles.includes(user.role)) { window.location.href = '/pages/login.html'; return null; }
+  return user;
+}
+
+function logout() {
+  apiReq('/auth/logout', { method: 'POST' }).catch(() => {});
+  ['atds_token','atds_user','atds_student'].forEach(k => localStorage.removeItem(k));
+  window.location.href = '/pages/login.html';
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type = 'info', dur = 3400) {
+  let box = document.getElementById('toastBox');
+  if (!box) {
+    box = document.createElement('div'); box.id = 'toastBox';
+    box.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
+    document.body.appendChild(box);
+  }
+  const colors = {
+    success: { bg:'#d1fae5', border:'#10b981', txt:'#065f46', ico:'✅' },
+    error:   { bg:'#ffe4e6', border:'#f43f5e', txt:'#9f1239', ico:'❌' },
+    warning: { bg:'#fef9c3', border:'#f59e0b', txt:'#78350f', ico:'⚠️' },
+    info:    { bg:'#e0e7ff', border:'#6366f1', txt:'#3730a3', ico:'ℹ️' }
+  };
+  const c = colors[type] || colors.info;
+  const t = document.createElement('div');
+  t.style.cssText = `display:flex;align-items:center;gap:9px;padding:12px 16px;border-radius:12px;background:${c.bg};border:1.5px solid ${c.border};color:${c.txt};font-size:13.5px;font-family:'Nunito',sans-serif;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.1);max-width:340px;animation:toastIn 0.28s ease;`;
+  t.innerHTML = `<span>${c.ico}</span><span>${msg}</span>`;
+  const style = document.createElement('style');
+  style.textContent = '@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}';
+  if (!document.querySelector('#toastStyle')) { style.id = 'toastStyle'; document.head.appendChild(style); }
+  box.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(16px)'; t.style.transition='all 0.28s'; setTimeout(() => t.remove(), 300); }, dur);
+}
+
+// ── Section navigation ────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById(`sec-${id}`);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.section === id);
+  });
+  if (window._onSection) window._onSection(id);
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+function buildSidebar(role) {
+  const user = getUser();
+  if (!user) return '';
+  const initials = user.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+
+  const navDefs = {
+    student: {
+      color:'var(--accent-indigo)', bg:'var(--pastel-indigo)',
+      items: [
+        { s:'dashboard',     ico:'🏠', lbl:'Dashboard',        clr:'var(--pastel-indigo)', acc:'var(--accent-indigo)' },
+        { s:'profile',       ico:'👤', lbl:'My Profile',       clr:'var(--pastel-purple)', acc:'var(--accent-purple)' },
+        { s:'academics',     ico:'🎓', lbl:'Academic Records',  clr:'var(--pastel-blue)',   acc:'var(--accent-blue)'   },
+        { s:'attendance',    ico:'📅', lbl:'Attendance',        clr:'var(--pastel-green)',  acc:'var(--accent-green)'  },
+        { s:'courses',       ico:'📚', lbl:'Courses',           clr:'var(--pastel-sky)',    acc:'var(--accent-sky)'    },
+        { s:'assignments',   ico:'✏️', lbl:'Assignments',       clr:'var(--pastel-orange)', acc:'var(--accent-orange)' },
+        { s:'timetable',     ico:'🕐', lbl:'Timetable',         clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+        { s:'fees',          ico:'💳', lbl:'Fee Details',       clr:'var(--pastel-pink)',   acc:'var(--accent-pink)'   },
+        { s:'notifications', ico:'🔔', lbl:'Notifications',     clr:'var(--pastel-yellow)', acc:'var(--accent-yellow)', badge:3 },
+      ]
+    },
+    faculty: {
+      color:'var(--accent-teal)', bg:'var(--pastel-teal)',
+      items: [
+        { s:'dashboard',   ico:'🏠', lbl:'Dashboard',        clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+        { s:'profile',     ico:'👤', lbl:'My Profile',       clr:'var(--pastel-purple)', acc:'var(--accent-purple)' },
+        { s:'students',    ico:'🎓', lbl:'Student List',      clr:'var(--pastel-blue)',   acc:'var(--accent-blue)'   },
+        { s:'marks',       ico:'📝', lbl:'Mark Management',   clr:'var(--pastel-indigo)', acc:'var(--accent-indigo)' },
+        { s:'attendance',  ico:'📅', lbl:'Attendance',        clr:'var(--pastel-green)',  acc:'var(--accent-green)'  },
+        { s:'assignments', ico:'✏️', lbl:'Assignments',       clr:'var(--pastel-orange)', acc:'var(--accent-orange)' },
+        { s:'timetable',   ico:'🕐', lbl:'Timetable',         clr:'var(--pastel-sky)',    acc:'var(--accent-sky)'    },
+        { s:'announcements',ico:'📢',lbl:'Announcements',     clr:'var(--pastel-pink)',   acc:'var(--accent-pink)'   },
+        { s:'requests',    ico:'📋', lbl:'Edit Requests',     clr:'var(--pastel-yellow)', acc:'var(--accent-yellow)', badge:'' },
+      ]
+    },
+    admin: {
+      color:'var(--accent-pink)', bg:'var(--pastel-pink)',
+      items: [
+        { s:'dashboard',     ico:'🏠', lbl:'Dashboard',        clr:'var(--pastel-pink)',   acc:'var(--accent-pink)'   },
+        { s:'profile',       ico:'👤', lbl:'My Profile',       clr:'var(--pastel-purple)', acc:'var(--accent-purple)' },
+        { s:'analytics',     ico:'📊', lbl:'Analytics',        clr:'var(--pastel-blue)',   acc:'var(--accent-blue)'   },
+        { s:'students',      ico:'🎓', lbl:'Students',          clr:'var(--pastel-indigo)', acc:'var(--accent-indigo)' },
+        { s:'faculty',       ico:'👨‍🏫', lbl:'Faculty',          clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+        { s:'departments',   ico:'🏛️', lbl:'Departments',      clr:'var(--pastel-sky)',    acc:'var(--accent-sky)'    },
+        { s:'fees',          ico:'💳', lbl:'Fee Management',    clr:'var(--pastel-green)',  acc:'var(--accent-green)'  },
+        { s:'requests',      ico:'📋', lbl:'Edit Requests',     clr:'var(--pastel-orange)', acc:'var(--accent-orange)', badge:'' },
+        { s:'integrity',     ico:'🔐', lbl:'Integrity Check',   clr:'var(--pastel-rose)',   acc:'var(--accent-rose)'   },
+        { s:'audit',         ico:'📄', lbl:'Audit Logs',        clr:'var(--pastel-yellow)', acc:'var(--accent-yellow)' },
+        { s:'announcements', ico:'📢', lbl:'Announcements',     clr:'var(--pastel-teal)',   acc:'var(--accent-teal)'   },
+      ]
+    }
+  };
+
+  const def = navDefs[role];
+  const roleLabel = { student:'Student', faculty:'Faculty', admin:'Administrator' }[role];
+  const avatarStyle = `background:${def.bg};color:${def.color};`;
+
+  const navHTML = def.items.map(it => `
+    <button class="nav-item" data-section="${it.s}" onclick="showSection('${it.s}')">
+      <span class="nav-ico" style="background:${it.clr};color:${it.acc};">${it.ico}</span>
+      <span>${it.lbl}</span>
+      ${it.badge !== undefined ? `<span class="nav-badge b-rose" id="badge-${it.s}" style="display:${it.badge ? 'inline' : 'none'}">${it.badge || ''}</span>` : ''}
+    </button>
+  `).join('');
+
+  return `
+    <div class="sidebar-brand">
+      <div class="brand-logo" style="background:${def.bg};">🛡️</div>
+      <div>
+        <div class="brand-name">ATDS Portal</div>
+        <div class="brand-tagline">Tamper Detection</div>
+      </div>
+    </div>
+    <div class="sidebar-user" style="background:${def.bg}20;">
+      <div class="u-avatar" style="${avatarStyle}">${initials}</div>
+      <div>
+        <div class="u-name">${user.name}</div>
+        <div class="u-role">🎓 ${roleLabel}</div>
+      </div>
+    </div>
+    <div class="nav-section-lbl">Menu</div>
+    ${navHTML}
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+    </div>
+  `;
+}
+
+// ── Formatters ────────────────────────────────────────────────────────────────
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+function fmtDT(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+function statusBadge(s) {
+  const m = {
+    pending:  '<span class="badge b-yellow">⏳ Pending</span>',
+    approved: '<span class="badge b-green">✅ Approved</span>',
+    rejected: '<span class="badge b-rose">❌ Rejected</span>',
+    verified: '<span class="badge b-green">🔒 Verified</span>',
+    tampered: '<span class="badge b-rose">⚠️ Tampered</span>',
+    active:   '<span class="badge b-green">● Active</span>',
+    inactive: '<span class="badge b-muted">● Inactive</span>',
+    present:  '<span class="badge b-green">Present</span>',
+    absent:   '<span class="badge b-rose">Absent</span>',
+    late:     '<span class="badge b-yellow">Late</span>',
+  };
+  return m[s] || `<span class="badge b-muted">${s}</span>`;
+}
+function truncHash(h) {
+  return h && h.length >= 16 ? h.substring(0,8)+'…'+h.substring(h.length-8) : h;
+}
+
+// ── Loading helpers ───────────────────────────────────────────────────────────
+function loadingHTML(msg='Loading…') {
+  return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px;color:var(--text-muted);">
+    <div style="width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent-indigo);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+    <span style="font-size:13px;font-weight:600;">${msg}</span>
+  </div>`;
+}
+function emptyHTML(msg='No data found', ico='📭') {
+  return `<div style="text-align:center;padding:40px;color:var(--text-muted);">
+    <div style="font-size:38px;margin-bottom:10px;opacity:0.45;">${ico}</div>
+    <div style="font-size:13px;font-weight:600;">${msg}</div>
+  </div>`;
+}
+
+</script>
+<script>
+let allStudents = [];
+const FACULTY_SUBJECTS = ['Data Structures','Algorithms','DBMS','Operating Systems','Computer Networks','Software Engineering'];
+const TIMES = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM'];
+const DAYS  = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+const FACULTY_TT = [
+  ['Data Structures','—','—','Algorithms','—'],
+  ['—','DBMS','Data Structures','—','OS'],
+  ['Algorithms','—','DBMS','—','—'],
+  ['—','OS','—','Data Structures','DBMS'],
+  ['DBMS','—','Algorithms','—','OS'],
+];
+const TT_COLORS = [
+  ['var(--pastel-indigo)','','','var(--pastel-purple)',''],
+  ['','var(--pastel-teal)','var(--pastel-indigo)','','var(--pastel-sky)'],
+  ['var(--pastel-purple)','','var(--pastel-teal)','',''],
+  ['','var(--pastel-sky)','','var(--pastel-indigo)','var(--pastel-teal)'],
+  ['var(--pastel-teal)','','var(--pastel-purple)','','var(--pastel-sky)'],
+];
+const TT_ACC = [
+  ['var(--accent-indigo)','','','var(--accent-purple)',''],
+  ['','var(--accent-teal)','var(--accent-indigo)','','var(--accent-sky)'],
+  ['var(--accent-purple)','','var(--accent-teal)','',''],
+  ['','var(--accent-sky)','','var(--accent-indigo)','var(--accent-teal)'],
+  ['var(--accent-teal)','','var(--accent-purple)','','var(--accent-sky)'],
+];
+
+const TITLE_MAP = {dashboard:'Dashboard',profile:'My Profile',students:'Student List',marks:'Mark Management',attendance:'Attendance',assignments:'Assignments',timetable:'Timetable',announcements:'Announcements',requests:'Edit Requests'};
+
+async function init() {
+  const user = requireAuth(['faculty']);
+  if (!user) return;
+  document.getElementById('sidebar').innerHTML = buildSidebar('faculty');
+  window._onSection = id => { document.getElementById('topbarTitle').textContent = TITLE_MAP[id]||id; };
+  document.getElementById('facWelcome').textContent = `Welcome, ${user.name.split(' ')[0]}! 👋`;
+  document.getElementById('todayDateFac').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('attDate').valueAsDate = new Date();
+  document.getElementById('asgnDue').valueAsDate = new Date(Date.now() + 7*24*3600*1000);
+
+  await loadStudents();
+  await loadDashboard();
+  renderProfile(user);
+  renderFacSubjects();
+  renderFacTimetable();
+  renderAttendanceSection();
+  renderFacAssignments();
+  loadAnnouncements();
+  loadMyRequests();
+}
+
+async function loadDashboard() {
+  const data = await apiReq('/faculty/dashboard-stats');
+  const stats = data?.stats || {};
+  document.getElementById('facStats').innerHTML = `
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-teal);">🎓</div><div class="stat-num">${stats.totalStudents||42}</div><div class="stat-lbl">Total Students</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">📚</div><div class="stat-num">${FACULTY_SUBJECTS.length}</div><div class="stat-lbl">Subjects</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-orange);">⏳</div><div class="stat-num">${stats.pendingRequests||0}</div><div class="stat-lbl">Pending Requests</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-green);">✅</div><div class="stat-num">${stats.approvedRequests||0}</div><div class="stat-lbl">Approved Edits</div></div>
+  `;
+  document.getElementById('qlStudents').textContent = stats.totalStudents||42;
+  document.getElementById('qlRequests').textContent = stats.pendingRequests||0;
+  if (data?.stats?.pendingRequests > 0) {
+    const b = document.getElementById('badge-requests');
+    if (b) { b.style.display='inline'; b.textContent=data.stats.pendingRequests; }
+  }
+
+  // Today schedule
+  const today = new Date().getDay();
+  const di = today>=1&&today<=5?today-1:0;
+  const todaySubs = FACULTY_TT.map((row,ti)=>({time:TIMES[ti],subj:row[di],bg:TT_COLORS[ti][di],acc:TT_ACC[ti][di]})).filter(x=>x.subj&&x.subj!=='—');
+  document.getElementById('facTodaySchedule').innerHTML = todaySubs.length
+    ? todaySubs.map(c=>`<div style="display:flex;align-items:center;gap:12px;padding:11px;border-radius:10px;background:${c.bg||'var(--bg-page)'};margin-bottom:8px;"><div style="font-weight:800;color:${c.acc};font-size:12px;min-width:65px;">${c.time}</div><div style="font-size:13px;font-weight:700;">${c.subj}</div></div>`).join('')
+    : '<div style="text-align:center;padding:24px;color:var(--text-muted);">No classes today 🎉</div>';
+
+  // Recent activity
+  document.getElementById('facRecentActivity').innerHTML = [
+    {ico:'📝',bg:'var(--pastel-indigo)',txt:'Marks submitted for DS Internal 1',time:'Today 10:30 AM'},
+    {ico:'📅',bg:'var(--pastel-teal)',txt:'Attendance marked for Algorithms',time:'Today 9:00 AM'},
+    {ico:'📋',bg:'var(--pastel-orange)',txt:'Edit request submitted for STU2021001',time:'Yesterday'},
+    {ico:'📢',bg:'var(--pastel-purple)',txt:'Announcement viewed: Exam Schedule',time:'2 days ago'},
+  ].map(a=>`<div class="notif-item"><div class="notif-ico-wrap" style="background:${a.bg};">${a.ico}</div><div><div style="font-size:13px;font-weight:600;">${a.txt}</div><div style="font-size:11px;color:var(--text-muted);">${a.time}</div></div></div>`).join('');
+}
+
+async function loadStudents() {
+  const data = await apiReq('/students?limit=100');
+  allStudents = data?.students || [];
+  renderStudentsTable(allStudents);
+  // Populate dropdown for requests
+  const sel = document.getElementById('reqStudent');
+  sel.innerHTML = '<option value="">-- Select Student --</option>' +
+    allStudents.map(s=>`<option value="${s._id}">${s.studentId} — ${s.userId?.name||'Unknown'}</option>`).join('');
+  // Attendance
+  document.getElementById('attMarkTbody').innerHTML = allStudents.slice(0,8).map(s=>`
+    <tr>
+      <td>${s.studentId}</td><td>${s.userId?.name||'–'}</td>
+      <td>
+        <div class="flex-c gap-2">
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="att_${s._id}" value="present" checked/> <span class="badge b-green" style="cursor:pointer;">Present</span></label>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="att_${s._id}" value="absent"/> <span class="badge b-rose" style="cursor:pointer;">Absent</span></label>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="att_${s._id}" value="late"/> <span class="badge b-yellow" style="cursor:pointer;">Late</span></label>
+        </div>
+      </td>
+      <td><input type="text" class="fctrl" placeholder="Remark" style="width:120px;padding:5px 8px;font-size:12px;"/></td>
+    </tr>`).join('');
+}
+
+function renderStudentsTable(students) {
+  const tbody = document.getElementById('facStudTbody');
+  const attPcts = [93,80,100,83,83,96];
+  tbody.innerHTML = students.map((s,i)=>`
+    <tr>
+      <td style="font-size:12px;">${s.studentId}</td>
+      <td>${s.userId?.name||'–'}</td>
+      <td>${s.program||'B.Tech'} / ${s.branch}</td>
+      <td><strong style="color:var(--accent-indigo);">${s.cgpa?.toFixed(2)||'–'}</strong></td>
+      <td><span class="badge ${(attPcts[i%attPcts.length]||85)>=75?'b-green':'b-rose'}">${attPcts[i%attPcts.length]||85}%</span></td>
+      <td>${statusBadge(s.integrityStatus||'verified')}</td>
+      <td><button class="btn btn-soft btn-sm" onclick="viewStudent('${s._id}')">👁️ View</button></td>
+    </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted);">No students found</td></tr>';
+}
+
+function searchFacStudents() {
+  const q = document.getElementById('facStudSearch').value.toLowerCase();
+  const br = document.getElementById('branchFilter').value;
+  const filtered = allStudents.filter(s =>
+    (!q || s.studentId.toLowerCase().includes(q) || (s.userId?.name||'').toLowerCase().includes(q)) &&
+    (!br || s.branch===br)
+  );
+  renderStudentsTable(filtered);
+}
+
+async function viewStudent(id) {
+  const data = await apiReq(`/students/${id}`);
+  if (!data?.success) return;
+  const s = data.student;
+  document.getElementById('studModalContent').innerHTML = `
+    <div class="prof-hero" style="margin-bottom:16px;padding:16px;background:var(--pastel-teal);">
+      <div class="prof-av-lg" style="background:var(--bg-card);color:var(--accent-teal);">${(s.userId?.name||'?')[0]}</div>
+      <div><div class="prof-name" style="font-size:17px;">${s.userId?.name}</div><div class="prof-id">${s.studentId}</div></div>
+    </div>
+    <div class="info-grid">
+      <div class="info-tile"><div class="it-lbl">Program</div><div class="it-val">${s.program}</div></div>
+      <div class="info-tile"><div class="it-lbl">Branch</div><div class="it-val">${s.branch}</div></div>
+      <div class="info-tile"><div class="it-lbl">CGPA</div><div class="it-val" style="color:var(--accent-teal);font-size:18px;">${s.cgpa?.toFixed(2)}</div></div>
+      <div class="info-tile"><div class="it-lbl">Semester</div><div class="it-val">${s.currentSemester}</div></div>
+    </div>
+    <div class="mt-3"><div class="it-lbl">Data Hash (SHA-256)</div><div style="font-size:11px;background:var(--pastel-teal);border-radius:8px;padding:8px;word-break:break-all;color:var(--accent-teal);font-weight:600;margin-top:4px;">${s.dataHash}</div></div>
+    <div class="mt-3 flex-btw">${statusBadge(s.integrityStatus)}<button class="btn btn-soft btn-sm" onclick="closeModal('studModal');showSection('requests');">📝 Request Edit</button></div>
+  `;
+  document.getElementById('studModal').classList.add('open');
+}
+
+function renderProfile(user) {
+  const initials = user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('facProfHero').innerHTML = `
+    <div class="prof-av-lg" style="background:var(--pastel-teal);color:var(--accent-teal);">${initials}</div>
+    <div><div class="prof-name">${user.name}</div><div class="prof-id">${user.userId}</div>
+    <div class="mt-2 flex gap-2"><span class="badge b-teal">👨‍🏫 Faculty</span><span class="badge b-green">● Active</span></div></div>`;
+  document.getElementById('facProfGrid').innerHTML = `
+    <div class="info-tile"><div class="it-lbl">Faculty ID</div><div class="it-val">${user.userId}</div></div>
+    <div class="info-tile"><div class="it-lbl">Email</div><div class="it-val">${user.email}</div></div>
+    <div class="info-tile"><div class="it-lbl">Department</div><div class="it-val">${user.department||'Computer Science'}</div></div>
+    <div class="info-tile"><div class="it-lbl">Designation</div><div class="it-val">Assistant Professor</div></div>
+    <div class="info-tile"><div class="it-lbl">Subjects</div><div class="it-val">${FACULTY_SUBJECTS.length}</div></div>
+    <div class="info-tile"><div class="it-lbl">Students</div><div class="it-val">${allStudents.length||42}</div></div>
+    <div class="info-tile"><div class="it-lbl">Qualification</div><div class="it-val">Ph.D. Computer Science</div></div>
+    <div class="info-tile"><div class="it-lbl">Experience</div><div class="it-val">8 Years</div></div>`;
+}
+
+function renderFacSubjects() {
+  const colors=[['var(--pastel-indigo)','var(--accent-indigo)'],['var(--pastel-teal)','var(--accent-teal)'],['var(--pastel-purple)','var(--accent-purple)'],['var(--pastel-sky)','var(--accent-sky)'],['var(--pastel-orange)','var(--accent-orange)'],['var(--pastel-pink)','var(--accent-pink)']];
+  document.getElementById('facSubjects').innerHTML = FACULTY_SUBJECTS.map((s,i)=>`
+    <div class="card" style="text-align:center;border-top:4px solid ${colors[i][1]};">
+      <div style="width:44px;height:44px;border-radius:12px;background:${colors[i][0]};display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 10px;">📚</div>
+      <div style="font-size:13px;font-weight:700;">${s}</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">4 Credits · B.Tech Sem 5</div>
+    </div>`).join('');
+}
+
+function loadMarksTable() {
+  const subj = document.getElementById('markSubject').value;
+  if (!subj) return;
+  const students = allStudents.slice(0,8);
+  document.getElementById('markTable').innerHTML = `<div class="tbl-wrap"><table>
+    <thead><tr><th>Student ID</th><th>Name</th><th>Marks (/${document.getElementById('markMax').value})</th><th>Grade</th></tr></thead>
+    <tbody>${students.map(s=>`<tr>
+      <td style="font-size:12px;">${s.studentId}</td><td>${s.userId?.name||'–'}</td>
+      <td><input type="number" class="fctrl" style="width:90px;padding:6px;" min="0" max="${document.getElementById('markMax').value}" placeholder="–" id="mark_${s._id}"/></td>
+      <td id="grade_${s._id}" style="color:var(--text-muted);">–</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+  // Auto-grade on input
+  students.forEach(s => {
+    const inp = document.getElementById(`mark_${s._id}`);
+    if (inp) inp.oninput = function() {
+      const pct = (this.value / document.getElementById('markMax').value) * 100;
+      document.getElementById(`grade_${s._id}`).innerHTML = pct>=90?'<span class="badge b-green">O</span>':pct>=80?'<span class="badge b-indigo">A+</span>':pct>=70?'<span class="badge b-blue">A</span>':pct>=60?'<span class="badge b-yellow">B+</span>':pct>=50?'<span class="badge b-orange">B</span>':'<span class="badge b-rose">F</span>';
+    };
+  });
+  document.getElementById('markSummary').innerHTML = `
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-green);">📊</div><div class="stat-num">8</div><div class="stat-lbl">Students</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">🏆</div><div class="stat-num">76%</div><div class="stat-lbl">Class Avg</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-teal);">⭐</div><div class="stat-num">96%</div><div class="stat-lbl">Highest</div></div>
+    <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-rose);">📉</div><div class="stat-num">58%</div><div class="stat-lbl">Lowest</div></div>`;
+}
+
+function saveMarks() { showToast('Marks saved successfully!','success'); }
+
+function renderAttendanceSection() {
+  const subjects = FACULTY_SUBJECTS.slice(0,4);
+  const attData  = [93,88,96,80];
+  document.getElementById('attSummary').innerHTML = `<div class="tbl-wrap"><table>
+    <thead><tr><th>Subject</th><th>Classes Conducted</th><th>Avg Attendance</th><th>Below 75%</th><th>Status</th></tr></thead>
+    <tbody>${subjects.map((s,i)=>`<tr>
+      <td>${s}</td><td>45</td>
+      <td><div class="flex-c gap-2"><strong style="color:${attData[i]>=75?'var(--accent-green)':'var(--accent-rose)'}">${attData[i]}%</strong><div class="prog-wrap" style="width:80px"><div class="prog-bar" style="width:${attData[i]}%;background:${attData[i]>=75?'var(--accent-green)':'var(--accent-rose)'}"></div></div></div></td>
+      <td><span style="color:var(--accent-rose);font-weight:700;">${Math.floor(Math.random()*3)+1} students</span></td>
+      <td><span class="badge ${attData[i]>=80?'b-green':attData[i]>=75?'b-yellow':'b-rose'}">${attData[i]>=80?'Excellent':attData[i]>=75?'Good':'Needs Attention'}</span></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function saveAttendance() { showToast('Attendance saved for today!','success'); }
+
+// ── Assignment storage helpers ────────────────────────────────────────────────
+function getStoredAssignments() {
+  try { return JSON.parse(localStorage.getItem('atds_assignments') || '[]'); } catch(e) { return []; }
+}
+function saveAssignments(arr) {
+  localStorage.setItem('atds_assignments', JSON.stringify(arr));
+}
+function getSubmissions() {
+  try { return JSON.parse(localStorage.getItem('atds_submissions') || '{}'); } catch(e) { return {}; }
+}
+
+function renderFacAssignments() {
+  const assignments = getStoredAssignments();
+  const submissions = getSubmissions();
+  const totalStudents = allStudents.length || 8;
+
+  if (!assignments.length) {
+    document.getElementById('facAsgnList').innerHTML = `
+      <div style="text-align:center;padding:40px;color:var(--text-muted);">
+        <div style="font-size:42px;margin-bottom:10px;opacity:0.4;">✏️</div>
+        <div style="font-size:14px;font-weight:700;">No assignments posted yet</div>
+        <div style="font-size:12px;margin-top:4px;">Create one above — students will see it immediately</div>
+      </div>`;
+    return;
+  }
+
+  const priColor = {high:'var(--accent-rose)',medium:'var(--accent-teal)',low:'var(--accent-green)'};
+  const priBg    = {high:'var(--pastel-rose)',medium:'var(--pastel-teal)',low:'var(--pastel-green)'};
+  const now = new Date();
+
+  document.getElementById('facAsgnList').innerHTML = assignments.slice().reverse().map(a => {
+    const subs     = submissions[a.id] || [];
+    const subCount = subs.length;
+    const pct      = totalStudents ? Math.round((subCount/totalStudents)*100) : 0;
+    const overdue  = new Date(a.due) < now;
+    return `
+    <div class="asgn-card" style="border-left-color:${priColor[a.priority]||'var(--accent-teal)'};">
+      <div class="flex-btw mb-2">
+        <div class="flex-c gap-2">
+          <span class="badge" style="background:${priBg[a.priority]};color:${priColor[a.priority]};">${(a.priority||'medium').toUpperCase()}</span>
+          <span class="badge b-teal">${a.subject}</span>
+          ${overdue ? '<span class="badge b-rose">⏰ Overdue</span>' : ''}
+        </div>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">Due: ${a.due} · Max: ${a.maxMarks} marks · ${a.batch==='all'?'All Students':'Batch '+a.batch}</span>
+      </div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${a.title}</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;">${a.description||''}</div>
+      <div class="flex-btw">
+        <div style="font-size:13px;">
+          Submissions: <strong style="color:${subCount>0?'var(--accent-green)':'var(--text-muted)'};">${subCount}</strong>
+          <span style="color:var(--text-muted);"> / ${totalStudents} students (${pct}%)</span>
+        </div>
+        <div class="flex-c gap-2">
+          <button class="btn btn-soft btn-sm" onclick="viewSubmissions('${a.id}')">📥 View Submissions</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--accent-rose);" onclick="deleteAssignment('${a.id}')">🗑</button>
+        </div>
+      </div>
+      <div class="prog-wrap mt-2"><div class="prog-bar" style="width:${pct}%;background:${priColor[a.priority]||'var(--accent-teal)'};"></div></div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Posted: ${fmtDT(a.createdAt)}</div>
+    </div>`;
+  }).join('');
+}
+
+function createAssignment() {
+  const title = document.getElementById('asgnTitle').value.trim();
+  const desc  = document.getElementById('asgnDesc').value.trim();
+  if (!title) { showToast('Enter an assignment title','warning'); return; }
+  if (!desc)  { showToast('Enter a description','warning'); return; }
+
+  const assignment = {
+    id:          'asgn_' + Date.now(),
+    title,
+    subject:     document.getElementById('asgnSubject').value,
+    due:         document.getElementById('asgnDue').value,
+    maxMarks:    parseInt(document.getElementById('asgnMarks').value) || 10,
+    priority:    document.getElementById('asgnPriority').value,
+    batch:       document.getElementById('asgnBatch').value,
+    description: desc,
+    createdAt:   new Date().toISOString(),
+    postedBy:    getUser()?.name || 'Faculty',
+    status:      'active'
+  };
+
+  const existing = getStoredAssignments();
+  existing.push(assignment);
+  saveAssignments(existing);
+
+  showToast(`✅ "${title}" posted — students can see it now!`, 'success');
+  document.getElementById('asgnTitle').value  = '';
+  document.getElementById('asgnDesc').value   = '';
+  renderFacAssignments();
+
+  // Update dashboard badge
+  document.getElementById('qlStudents').parentElement && renderFacAssignments();
+}
+
+function deleteAssignment(id) {
+  if (!confirm('Delete this assignment? Students will no longer see it.')) return;
+  const arr = getStoredAssignments().filter(a => a.id !== id);
+  saveAssignments(arr);
+  showToast('Assignment deleted','info');
+  renderFacAssignments();
+}
+
+function viewSubmissions(asgnId) {
+  const assignments = getStoredAssignments();
+  const asgn = assignments.find(a => a.id === asgnId);
+  if (!asgn) return;
+
+  const submissions = getSubmissions();
+  const subs = submissions[asgnId] || [];
+  const totalStudents = allStudents.length || 8;
+
+  document.getElementById('submissionsTitle').textContent = asgn.title;
+  document.getElementById('submissionsSub').textContent = `${asgn.subject} · Due: ${asgn.due} · Max: ${asgn.maxMarks} marks`;
+
+  // Build submitted set
+  const submittedIds = new Set(subs.map(s => s.studentId));
+
+  // Merge: submitted students + not-yet-submitted
+  const submittedRows = subs.map(s => `
+    <tr>
+      <td>${s.studentId}</td>
+      <td>${s.studentName}</td>
+      <td><span class="badge b-green">✅ Submitted</span></td>
+      <td style="font-size:12px;color:var(--text-muted);">${fmtDT(s.submittedAt)}</td>
+      <td><input type="number" class="fctrl" style="width:80px;padding:5px 8px;font-size:12px;" min="0" max="${asgn.maxMarks}" placeholder="–" value="${s.marks||''}" id="marks_${s.studentId}" onchange="saveStudentMark('${asgnId}','${s.studentId}',this.value)"/></td>
+    </tr>`).join('');
+
+  const notSubmitted = allStudents.filter(st => !submittedIds.has(st.studentId || st.userId)).slice(0, Math.max(0, totalStudents - subs.length));
+  const pendingRows = notSubmitted.map(st => `
+    <tr style="opacity:0.6;">
+      <td>${st.studentId || st.userId}</td>
+      <td>${st.userId?.name || st.name || '–'}</td>
+      <td><span class="badge b-yellow">⏳ Pending</span></td>
+      <td style="font-size:12px;color:var(--text-muted);">Not submitted yet</td>
+      <td style="color:var(--text-muted);">–</td>
+    </tr>`).join('');
+
+  const summary = `
+    <div class="stats-row mb-3" style="grid-template-columns:1fr 1fr 1fr;">
+      <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-green);">✅</div><div class="stat-num">${subs.length}</div><div class="stat-lbl">Submitted</div></div>
+      <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-yellow);">⏳</div><div class="stat-num">${totalStudents - subs.length}</div><div class="stat-lbl">Pending</div></div>
+      <div class="stat-card"><div class="stat-ico" style="background:var(--pastel-indigo);">📊</div><div class="stat-num">${totalStudents?Math.round((subs.length/totalStudents)*100):0}%</div><div class="stat-lbl">Completion</div></div>
+    </div>`;
+
+  document.getElementById('submissionsContent').innerHTML = summary + (subs.length === 0 && notSubmitted.length === 0
+    ? '<div style="text-align:center;padding:30px;color:var(--text-muted);">No student data loaded. Go to Student List section first.</div>'
+    : `<div class="tbl-wrap"><table>
+        <thead><tr><th>Student ID</th><th>Name</th><th>Status</th><th>Submitted At</th><th>Marks (/${asgn.maxMarks})</th></tr></thead>
+        <tbody>${submittedRows}${pendingRows}</tbody>
+      </table></div>`);
+
+  document.getElementById('submissionsModal').classList.add('open');
+}
+
+function saveStudentMark(asgnId, studentId, value) {
+  const subs = getSubmissions();
+  if (!subs[asgnId]) return;
+  const s = subs[asgnId].find(s => s.studentId === studentId);
+  if (s) { s.marks = parseInt(value); localStorage.setItem('atds_submissions', JSON.stringify(subs)); showToast('Mark saved!','success'); }
+}
+
+function renderFacTimetable() {
+  let html = '<div class="tt-grid">';
+  html += '<div class="tt-hd">Time</div>';
+  DAYS.forEach(d => html += `<div class="tt-hd">${d}</div>`);
+  TIMES.forEach((t,ti) => {
+    html += `<div class="tt-tm">${t}</div>`;
+    DAYS.forEach((_,di) => {
+      const subj=FACULTY_TT[ti][di];
+      if(!subj||subj==='—') { html+='<div class="tt-cell tt-empty">Free</div>'; }
+      else { html+=`<div class="tt-cell" style="background:${TT_COLORS[ti][di]};color:${TT_ACC[ti][di]};">${subj}</div>`; }
+    });
+  });
+  html += '</div>';
+  document.getElementById('facTTGrid').innerHTML = html;
+}
+
+async function loadAnnouncements() {
+  const data = await apiReq('/announcements');
+  const anns = data?.announcements||[];
+  document.getElementById('facAnnList').innerHTML = anns.length
+    ? anns.map(a=>`
+      <div class="card mb-3" style="border-left:4px solid ${a.priority==='urgent'?'var(--accent-rose)':a.priority==='high'?'var(--accent-orange)':'var(--accent-indigo)'};">
+        <div class="flex-btw mb-2">
+          <div class="flex-c gap-2">
+            <span class="badge ${a.priority==='urgent'?'b-rose':a.priority==='high'?'b-orange':'b-indigo'}">${a.priority}</span>
+            <span class="badge b-muted">${a.category}</span>
+          </div>
+          <div class="flex-c gap-2">
+            <span style="font-size:12px;color:var(--text-muted);">${fmtDate(a.createdAt)}</span>
+            <button class="btn btn-soft btn-sm" onclick="downloadAnnPDF('${a._id}','${a.title.replace(/'/g,"\\'")}')">📄 Download PDF</button>
+          </div>
+        </div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px;">${a.title}</div>
+        <div style="font-size:13px;color:var(--text-body);line-height:1.6;">${a.content}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">👁 ${a.viewCount||0} views · Posted by Admin</div>
+      </div>`).join('')
+    : emptyHTML('No announcements from admin yet','📢');
+}
+
+function downloadAnnPDF(id, title) {
+  const token = getToken();
+  showToast('Preparing PDF…', 'info');
+  fetch(`/api/pdf/announcement/${id}`, { headers:{ Authorization:`Bearer ${token}` }})
+    .then(r => { if (!r.ok) throw new Error('Failed'); return r.blob(); })
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href    = url;
+      a.download = `announcement-${title.replace(/\s+/g,'-').toLowerCase()}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('PDF downloaded!', 'success');
+    })
+    .catch(() => showToast('PDF download failed — check if server is running','error'));
+}
+
+function loadStudentForReq(id) {
+  const s = allStudents.find(s=>s._id===id);
+  if (!s) return;
+  
+  // Populate edit mode
+  const sel = document.getElementById('reqSem');
+  sel.innerHTML = '<option value="">-- Select Semester --</option>' +
+    (s.semesterRecords||[{semester:1},{semester:2},{semester:3}]).map(r=>`<option value="${r.semester}">Semester ${r.semester}</option>`).join('');
+  
+  // Suggest next semester in new mode
+  const maxSem = (s.semesterRecords||[]).reduce((max, r) => Math.max(max, r.semester || 1), 0);
+  const nextSem = maxSem + 1;
+  document.getElementById('newSem').value = nextSem <= 10 ? nextSem : '';
+}
+
+function toggleRequestMode() {
+  const mode = document.getElementById('reqType').value;
+  document.getElementById('editMode').style.display = mode === 'edit' ? 'block' : 'none';
+  document.getElementById('newMode').style.display = mode === 'new' ? 'block' : 'none';
+}
+
+async function submitRequest() {
+  const studentId = document.getElementById('reqStudent').value;
+  const reason = document.getElementById('reqReason').value.trim();
+  const mode = document.getElementById('reqType').value;
+  
+  if (!studentId || !reason) { showToast('Select student and enter reason', 'warning'); return; }
+  
+  let requestedChanges = {};
+  
+  if (mode === 'edit') {
+    const semester = document.getElementById('reqSem').value;
+    const gpa = parseFloat(document.getElementById('reqGpa').value);
+    const year = parseInt(document.getElementById('reqYear').value);
+    
+    if (!semester) { showToast('Select a semester to edit', 'warning'); return; }
+    if (isNaN(gpa) || gpa < 0 || gpa > 10) { showToast('Enter valid GPA (0-10)', 'warning'); return; }
+    
+    requestedChanges = {
+      semesterRecord: {
+        semester: parseInt(semester),
+        gpa,
+        year,
+        totalCredits: 22,
+        earnedCredits: 22
+      }
+    };
+  } else {
+    // New semester mode
+    const semester = parseInt(document.getElementById('newSem').value);
+    const gpa = parseFloat(document.getElementById('newGpa').value);
+    const totalCred = parseInt(document.getElementById('newTotalCred').value);
+    const earnedCred = parseInt(document.getElementById('newEarnedCred').value);
+    const year = parseInt(document.getElementById('newYear').value);
+    
+    if (!semester || semester < 1 || semester > 10) { showToast('Enter valid semester (1-10)', 'warning'); return; }
+    if (isNaN(gpa) || gpa < 0 || gpa > 10) { showToast('Enter valid GPA (0-10)', 'warning'); return; }
+    if (isNaN(totalCred) || totalCred <= 0) { showToast('Enter valid total credits', 'warning'); return; }
+    if (isNaN(earnedCred) || earnedCred < 0 || earnedCred > totalCred) { showToast('Earned credits must be ≤ total credits', 'warning'); return; }
+    if (isNaN(year) || year < 2000) { showToast('Enter valid year', 'warning'); return; }
+    
+    requestedChanges = {
+      semesterRecord: {
+        semester,
+        gpa,
+        totalCredits: totalCred,
+        earnedCredits: earnedCred,
+        year,
+        subjects: []
+      }
+    };
+  }
+  
+  const btn = document.getElementById('reqBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Submitting...';
+  
+  const data = await apiReq('/faculty/edit-request', {
+    method: 'POST',
+    body: { studentId, reason, requestedChanges }
+  });
+  
+  btn.disabled = false;
+  btn.textContent = '📤 Submit Request';
+  
+  if (data?.success) {
+    showToast('Request submitted! Awaiting admin approval.', 'success');
+    document.getElementById('reqReason').value = '';
+    ['reqStudent', 'reqType'].forEach(id => document.getElementById(id).value = '');
+    toggleRequestMode();
+    loadMyRequests();
+  } else {
+    showToast(data?.message || 'Failed', 'error');
+  }
+}
+
+async function loadMyRequests() {
+  const data = await apiReq('/faculty/edit-requests');
+  const tbody = document.getElementById('reqTbody');
+  const reqs = data?.requests||[];
+  if (!reqs.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">No requests yet</td></tr>'; return; }
+  tbody.innerHTML = reqs.map(r=>`<tr>
+    <td style="font-size:12px;">${r.requestId}</td>
+    <td>${r.student?.studentId||'–'}</td>
+    <td style="font-size:12px;max-width:200px;">${r.reason}</td>
+    <td style="font-size:12px;">${fmtDate(r.createdAt)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td style="font-size:12px;color:var(--text-muted);">${r.reviewNote||'–'}</td>
+  </tr>`).join('');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', e => { if(e.target.classList.contains('modal-ov')) e.target.classList.remove('open'); });
+init();
+</script>
+</body>
+</html>
