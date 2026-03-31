@@ -9,24 +9,29 @@ const app = express();
  
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: '*',
+  origin: process.env.NODE_ENV === 'production' ? process.env.APP_URL : '*',
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
  
-// Rate Limiting
+// Rate Limiting - 500 requests per 15 minutes
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later.' }
 });
 app.use('/api/', limiter);
  
+// Auth Rate Limiting - 100 login attempts per 15 minutes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { success: false, message: 'Too many login attempts, please try again later.' }
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many login attempts, please try again in 15 minutes.' }
 });
 app.use('/api/auth/', authLimiter);
  
@@ -53,6 +58,7 @@ app.get('/api/health', (req, res) => {
 // Frontend catch-all - only redirect page requests, not static assets
 app.get('*', (req, res) => {
   const url = req.url;
+  // Don't catch CSS, JS, or image requests
   if (url.includes('.css') || url.includes('.js') || url.includes('.png') || url.includes('.jpg') || url.includes('.ico')) {
     return res.status(404).send('File not found: ' + url);
   }
@@ -73,10 +79,9 @@ app.use((err, req, res, next) => {
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB Connected');
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📊 Dashboard: http://localhost:${PORT}`);
+    app.listen(process.env.PORT || 5000, () => {
+      console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+      console.log(`📊 Dashboard: http://localhost:${process.env.PORT || 5000}`);
     });
   })
   .catch(err => {
@@ -85,4 +90,3 @@ mongoose.connect(process.env.MONGODB_URI)
   });
  
 module.exports = app;
- 
