@@ -111,7 +111,68 @@ http://localhost:5000
 
 ---
 
-## 🔑 Demo Login Credentials
+## � Vercel Deployment
+
+This project has been refactored for Vercel deployment with serverless functions.
+
+### What's Been Done
+- ✅ Frontend moved to `public/` directory
+- ✅ Basic API routes converted to serverless functions (`/api/auth/*`)
+- ✅ Database connection utilities created
+- ✅ Authentication middleware adapted for serverless
+- ✅ `vercel.json` configuration added
+- ✅ Root `package.json` created
+
+### Remaining Work
+The following API routes still need conversion to serverless functions:
+- `/api/students/*` - Student management
+- `/api/faculty/*` - Faculty operations
+- `/api/admin/*` - Admin functions
+- `/api/announcements/*` - Announcements
+- `/api/audit/*` - Audit logs
+- `/api/pdf/*` - PDF generation
+
+### Deployment Steps
+1. **Install Vercel CLI**:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy**:
+   ```bash
+   vercel
+   ```
+
+3. **Set Environment Variables** in Vercel Dashboard:
+   - `MONGODB_URI` - Your MongoDB Atlas connection string
+   - `JWT_SECRET` - JWT signing secret
+   - `JWT_EXPIRE` - JWT expiration time
+   - `BCRYPT_ROUNDS` - Password hashing rounds
+
+4. **Access your app** at the provided Vercel URL
+
+### Local Development (Vercel)
+```bash
+npm install
+npm run dev
+```
+
+### API Endpoints (Converted)
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user profile
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/change-password` - Change password
+- `GET /api/health` - Health check
+
+### Architecture Notes
+- Serverless functions connect to MongoDB on each request
+- Authentication uses JWT tokens stored in headers
+- Static files served from `public/` directory
+- CORS enabled for cross-origin requests
+
+---
+
+## �🔑 Demo Login Credentials
 
 | Role | User ID | Password |
 |------|---------|----------|
