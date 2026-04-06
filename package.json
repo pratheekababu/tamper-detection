@@ -15,7 +15,8 @@
     "express-rate-limit": "^7.1.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
-    "pdfkit": "^0.14.0"
+    "pdfkit": "^0.14.0",
+    "serverless-http": "^3.0.0"
   },
   "devDependencies": {
     "vercel": "^32.0.0"
