@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Student = require('../models/Student');
+const Faculty = require('../models/Faculty');
 const { EditRequest, AuditLog } = require('../models/AuditLog');
 const { authenticate, authorize } = require('../middleware/auth');
 const { generateStudentHash, runIntegrityCheck, repairStudentHash } = require('../utils/tamperDetection');
@@ -214,6 +215,25 @@ router.post('/users', authenticate, authorize('admin'), async (req, res) => {
       newStudent.dataHash = hash;
       newStudent.hashHistory.push({ hash, changedBy: req.user._id, changeType: 'initial', previousHash: null });
       await newStudent.save();
+    }
+
+    if (role === 'faculty') {
+      const facultyData = req.body.facultyData || {};
+      await Faculty.create({
+        userId: newUser._id,
+        facultyId: userId,
+        designation: facultyData.designation || 'Assistant Professor',
+        specialization: facultyData.specialization || department || 'General',
+        qualifications: facultyData.qualifications || [],
+        experience: facultyData.experience || 0,
+        joiningDate: facultyData.joiningDate || new Date(),
+        coursesTaught: facultyData.coursesTaught || [],
+        researchInterests: facultyData.researchInterests || [],
+        publications: facultyData.publications || 0,
+        officeRoom: facultyData.officeRoom || '',
+        officeHours: facultyData.officeHours || '',
+        bio: facultyData.bio || ''
+      });
     }
 
     await AuditLog.create({

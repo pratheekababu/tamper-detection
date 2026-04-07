@@ -1,8 +1,65 @@
 const express = require('express');
 const router = express.Router();
 const Student = require('../models/Student');
+const Faculty = require('../models/Faculty');
 const { EditRequest, AuditLog } = require('../models/AuditLog');
 const { authenticate, authorize } = require('../middleware/auth');
+
+// GET /api/faculty/me - Faculty gets own detailed profile
+router.get('/me', authenticate, authorize('faculty'), async (req, res) => {
+  try {
+    const faculty = await Faculty.findOne({ userId: req.user._id })
+      .populate('userId', 'name email department phone userId profilePhoto isActive lastLogin createdAt');
+
+    if (!faculty) {
+      // Return basic user info if no faculty profile exists yet
+      return res.json({
+        success: true,
+        faculty: null,
+        user: {
+          name: req.user.name,
+          email: req.user.email,
+          userId: req.user.userId,
+          department: req.user.department,
+          phone: req.user.phone,
+          lastLogin: req.user.lastLogin,
+          createdAt: req.user.createdAt
+        }
+      });
+    }
+
+    res.json({ success: true, faculty });
+  } catch (err) {
+    console.error('Faculty profile error:', err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// GET /api/faculty/list - Admin/Faculty gets list of all faculty with details
+router.get('/list', authenticate, authorize('admin', 'faculty'), async (req, res) => {
+  try {
+    const { page = 1, limit = 50, search, department } = req.query;
+    const filter = {};
+    if (department) filter.specialization = { $regex: department, $options: 'i' };
+
+    let faculties = await Faculty.find(filter)
+      .populate('userId', 'name email department phone userId isActive lastLogin createdAt')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await Faculty.countDocuments(filter);
+
+    res.json({
+      success: true,
+      faculties,
+      pagination: { total, page: parseInt(page), limit: parseInt(limit), pages: Math.ceil(total / limit) }
+    });
+  } catch (err) {
+    console.error('Faculty list error:', err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
 
 // POST /api/faculty/edit-request - Faculty submits edit request
 router.post('/edit-request', authenticate, authorize('faculty'), async (req, res) => {

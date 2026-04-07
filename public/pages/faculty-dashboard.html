@@ -948,21 +948,87 @@ async function viewStudent(id) {
   document.getElementById('studModal').classList.add('open');
 }
 
-function renderProfile(user) {
+async function renderProfile(user) {
   const initials = user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+  
+  // Fetch detailed faculty profile from API
+  const profileData = await apiReq('/faculty/me');
+  const fac = profileData?.faculty;
+
   document.getElementById('facProfHero').innerHTML = `
     <div class="prof-av-lg" style="background:var(--pastel-teal);color:var(--accent-teal);">${initials}</div>
     <div><div class="prof-name">${user.name}</div><div class="prof-id">${user.userId}</div>
-    <div class="mt-2 flex gap-2"><span class="badge b-teal">👨‍🏫 Faculty</span><span class="badge b-green">● Active</span></div></div>`;
-  document.getElementById('facProfGrid').innerHTML = `
-    <div class="info-tile"><div class="it-lbl">Faculty ID</div><div class="it-val">${user.userId}</div></div>
-    <div class="info-tile"><div class="it-lbl">Email</div><div class="it-val">${user.email}</div></div>
-    <div class="info-tile"><div class="it-lbl">Department</div><div class="it-val">${user.department||'Computer Science'}</div></div>
-    <div class="info-tile"><div class="it-lbl">Designation</div><div class="it-val">Assistant Professor</div></div>
-    <div class="info-tile"><div class="it-lbl">Subjects</div><div class="it-val">${FACULTY_SUBJECTS.length}</div></div>
-    <div class="info-tile"><div class="it-lbl">Students</div><div class="it-val">${allStudents.length||42}</div></div>
-    <div class="info-tile"><div class="it-lbl">Qualification</div><div class="it-val">Ph.D. Computer Science</div></div>
-    <div class="info-tile"><div class="it-lbl">Experience</div><div class="it-val">8 Years</div></div>`;
+    <div class="mt-2 flex gap-2">
+      <span class="badge b-teal">👨‍🏫 ${fac?.designation || 'Faculty'}</span>
+      <span class="badge b-green">● Active</span>
+      ${fac?.publications ? `<span class="badge b-indigo">📄 ${fac.publications} Publications</span>` : ''}
+    </div></div>`;
+
+  if (fac) {
+    const qualsHTML = (fac.qualifications || []).map(q => 
+      `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-page);border-radius:8px;margin-bottom:6px;">
+        <span style="font-size:16px;">🎓</span>
+        <div><div style="font-weight:700;font-size:13px;">${q.degree} in ${q.field}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${q.institution}${q.year ? ' · ' + q.year : ''}</div></div>
+      </div>`
+    ).join('');
+
+    const researchHTML = (fac.researchInterests || []).map(r => 
+      `<span class="badge b-indigo" style="font-size:11px;margin:2px;">${r}</span>`
+    ).join('');
+
+    document.getElementById('facProfGrid').innerHTML = `
+      <div class="info-tile"><div class="it-lbl">Faculty ID</div><div class="it-val">${fac.facultyId || user.userId}</div></div>
+      <div class="info-tile"><div class="it-lbl">Email</div><div class="it-val">${fac.userId?.email || user.email}</div></div>
+      <div class="info-tile"><div class="it-lbl">Department</div><div class="it-val">${fac.userId?.department || user.department || 'N/A'}</div></div>
+      <div class="info-tile"><div class="it-lbl">Designation</div><div class="it-val" style="color:var(--accent-teal);">${fac.designation}</div></div>
+      <div class="info-tile"><div class="it-lbl">Specialization</div><div class="it-val">${fac.specialization}</div></div>
+      <div class="info-tile"><div class="it-lbl">Experience</div><div class="it-val">${fac.experience} Years</div></div>
+      <div class="info-tile"><div class="it-lbl">Joining Date</div><div class="it-val">${fmtDate(fac.joiningDate)}</div></div>
+      <div class="info-tile"><div class="it-lbl">Phone</div><div class="it-val">${fac.userId?.phone || user.phone || 'N/A'}</div></div>
+      <div class="info-tile"><div class="it-lbl">Office</div><div class="it-val">${fac.officeRoom || 'N/A'}</div></div>
+      <div class="info-tile"><div class="it-lbl">Office Hours</div><div class="it-val">${fac.officeHours || 'N/A'}</div></div>
+      <div class="info-tile"><div class="it-lbl">Publications</div><div class="it-val" style="color:var(--accent-indigo);">${fac.publications || 0}</div></div>
+      <div class="info-tile"><div class="it-lbl">Total Students</div><div class="it-val">${allStudents.length || '–'}</div></div>`;
+
+    // Add qualifications and research interests below the grid
+    const extraHTML = `
+      <div class="mt-4">
+        ${fac.bio ? `<div class="card mb-3" style="border-left:4px solid var(--accent-teal);">
+          <div class="card-title mb-2">📝 About</div>
+          <div style="font-size:13px;color:var(--text-body);line-height:1.6;">${fac.bio}</div>
+        </div>` : ''}
+        ${qualsHTML ? `<div class="card mb-3">
+          <div class="card-title mb-3">🎓 Qualifications</div>
+          ${qualsHTML}
+        </div>` : ''}
+        ${researchHTML ? `<div class="card">
+          <div class="card-title mb-3">🔬 Research Interests</div>
+          <div class="flex" style="flex-wrap:wrap;gap:4px;">${researchHTML}</div>
+        </div>` : ''}
+      </div>`;
+
+    // Insert after the info grid
+    document.getElementById('facProfGrid').insertAdjacentHTML('afterend', extraHTML);
+  } else {
+    // Fallback: basic info only
+    document.getElementById('facProfGrid').innerHTML = `
+      <div class="info-tile"><div class="it-lbl">Faculty ID</div><div class="it-val">${user.userId}</div></div>
+      <div class="info-tile"><div class="it-lbl">Email</div><div class="it-val">${user.email}</div></div>
+      <div class="info-tile"><div class="it-lbl">Department</div><div class="it-val">${user.department || 'N/A'}</div></div>
+      <div class="info-tile"><div class="it-lbl">Status</div><div class="it-val">Active</div></div>`;
+  }
+
+  // Update subjects section with real courses if available
+  if (fac && fac.coursesTaught && fac.coursesTaught.length > 0) {
+    const colors=[['var(--pastel-indigo)','var(--accent-indigo)'],['var(--pastel-teal)','var(--accent-teal)'],['var(--pastel-purple)','var(--accent-purple)'],['var(--pastel-sky)','var(--accent-sky)'],['var(--pastel-orange)','var(--accent-orange)'],['var(--pastel-pink)','var(--accent-pink)']];
+    document.getElementById('facSubjects').innerHTML = fac.coursesTaught.map((c,i) => `
+      <div class="card" style="text-align:center;border-top:4px solid ${colors[i % colors.length][1]};">
+        <div style="width:44px;height:44px;border-radius:12px;background:${colors[i % colors.length][0]};display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 10px;">📚</div>
+        <div style="font-size:13px;font-weight:700;">${c.name}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${c.code ? c.code + ' · ' : ''}${c.program || 'B.Tech'} Sem ${c.semester || '–'}</div>
+      </div>`).join('');
+  }
 }
 
 function renderFacSubjects() {
